@@ -33,6 +33,12 @@ import AdminRestaurants from "./pages/admin/AdminRestaurants";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminDeliveryPartners from "./pages/admin/AdminDeliveryPartners";
 
+import Home from "./pages/Customer/Home";
+
+
+
+        import CustomerLogin from "./pages/Auth/CustomerLogin";
+import CustomerRegister from "./pages/Auth/CustomerRegister";
 function App() {
   return (
     <BrowserRouter>
@@ -77,6 +83,23 @@ function App() {
         <Route path="/admin/restaurants" element={<AdminRestaurants />} />
         <Route path="/admin/customers" element={<AdminCustomers />} />
         <Route path="/admin/delivery-partners" element={<AdminDeliveryPartners />} />
+
+
+
+
+<Route path="/" element={<Home />} />
+<Route path="/restaurant/:restaurantId" element={<RestaurantMenu />} />
+
+<Route path="/cart" element={<Cart />} />
+
+
+<Route path="/customer/login" element={<CustomerLogin />} />
+<Route path="/customer/register" element={<CustomerRegister />} />
+
+
+<Route path="/checkout" element={<Checkout />} />
+
+<Route path="/payment" element={<Payment />} />
 
       </Routes>
     </BrowserRouter>
