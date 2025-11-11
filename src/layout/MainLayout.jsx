@@ -1,62 +1,80 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+// src/layout/MainLayout.jsx
+import React, { useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
+import Footer from "../components/Footer/Footer";
 
 const MainLayout = () => {
-  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      {/* Navbar */}
+      <Navbar />
 
-      {/* ✅ NAVBAR */}
-      <nav className="px-6 py-4 backdrop-blur-md bg-white/5 border-b border-white/10 flex justify-between items-center sticky top-0 z-50">
-        
-        {/* ✅ Logo */}
-        <motion.h1
-          className="text-2xl font-bold tracking-wide neon-green"
-          whileHover={{ scale: 1.05 }}
+      {/* Main Content */}
+      <div className="flex flex-1">
+        {/* Optional Sidebar */}
+        <aside
+          className={`${
+            sidebarOpen ? "w-64" : "w-0"
+          } bg-gray-800 transition-all duration-300 overflow-hidden`}
         >
-          <Link to="/">FoodX</Link>
-        </motion.h1>
+          <div className="p-4">
+            <button
+              className="text-gray-300 hover:text-white mb-4"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              {sidebarOpen ? "Close" : "Open"}
+            </button>
 
-        {/* ✅ Nav Items */}
-        <div className="flex items-center gap-6">
-          <Link
-            to="/cart"
-            className="text-lg hover:text-[#00ff9d] transition-all duration-200"
-          >
-            Cart
-          </Link>
+            <nav className="space-y-2">
+              <Link
+                to="/"
+                className="block p-2 rounded hover:bg-gray-700 transition"
+              >
+                Home
+              </Link>
+              <Link
+                to="/cart"
+                className="block p-2 rounded hover:bg-gray-700 transition"
+              >
+                Cart
+              </Link>
+              <Link
+                to="/my-orders"
+                className="block p-2 rounded hover:bg-gray-700 transition"
+              >
+                My Orders
+              </Link>
+              <Link
+                to="/profile"
+                className="block p-2 rounded hover:bg-gray-700 transition"
+              >
+                Profile
+              </Link>
+              <Link
+                to="/ai-food-assistant"
+                className="block p-2 rounded hover:bg-gray-700 transition"
+              >
+                AI Food Assistant
+              </Link>
+            </nav>
+          </div>
+        </aside>
 
-          <Link
-            to="/orders"
-            className="text-lg hover:text-[#00ff9d] transition-all duration-200"
-          >
-            My Orders
-          </Link>
+        {/* Page Content */}
+        <main className="flex-1 p-6 overflow-auto">
+          <Outlet /> {/* React Router Outlet for child pages */}
+        </main>
+      </div>
 
-          <Link
-            to="/ai"
-            className="text-lg hover:text-[#00ff9d] transition-all duration-200"
-          >
-            AI Assistant
-          </Link>
-
-          <button
-            onClick={() => navigate("/login")}
-            className="px-4 py-2 bg-[#00ff9d] text-black rounded-xl font-semibold hover:bg-[#00ffaa] transition-all shadow-[0_0_10px_#00ff9d]"
-          >
-            Login
-          </button>
-        </div>
-      </nav>
-
-      {/* ✅ PAGE CONTENT */}
-      <main className="flex-1 p-4 md:p-8">
-        <Outlet />
-      </main>
-
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
 
 export default MainLayout;
+
+
