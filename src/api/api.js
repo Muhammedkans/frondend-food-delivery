@@ -1,11 +1,13 @@
-import axios from 'axios';
+// src/api/api.js
+import axios from "axios";
 
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  withCredentials: true, // cookie-based auth support
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true, // for cookies
 });
 
-export default API;
+export default api;
+
 
 
 

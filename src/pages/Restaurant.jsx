@@ -1,18 +1,46 @@
 // src/pages/Restaurant.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // ✅ get restaurant ID from URL
 import { useSelector } from "react-redux";
+import axios from "../api/api"; // ✅ use your existing axios instance
 import AISuggestions from "../components/AISuggestions";
 import MenuItemCard from "../components/MenuItemCard";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 
-const Restaurant = ({ restaurant }) => {
+const Restaurant = () => {
+  const { id } = useParams(); // ✅ /restaurant/:id
+  const [restaurant, setRestaurant] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { cartItems } = useSelector((state) => state.cart);
+
+  // ✅ Fetch single restaurant details
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        const { data } = await axios.get(`/restaurant/${id}`);
+        setRestaurant(data.restaurant || data);
+      } catch (error) {
+        console.error("Error fetching restaurant:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRestaurant();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-600">
+        Loading restaurant details...
+      </div>
+    );
+  }
 
   if (!restaurant) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-600">
-        Loading restaurant details...
+        Restaurant not found.
       </div>
     );
   }
@@ -121,6 +149,7 @@ const Restaurant = ({ restaurant }) => {
 };
 
 export default Restaurant;
+
 
 
 

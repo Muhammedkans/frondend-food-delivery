@@ -1,141 +1,180 @@
-import React, { useEffect, useState } from 'react';
-import api from '../api/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import Loader from '../components/Loader';
-import { toast } from 'react-toastify';
+import { useGetCartQuery } from "../redux/api/customerApi";
+import { usePlaceOrderMutation } from "../redux/api/orderApi";
+import { useCreatePaymentOrderMutation } from "../redux/api/paymentApi";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const Checkout = () => {
-  const [cart, setCart] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [address, setAddress] = useState('');
+  const { data: cartData, isLoading } = useGetCartQuery();
+  const [placeOrder] = usePlaceOrderMutation();
+  const [createPaymentOrder] = useCreatePaymentOrderMutation();
 
-  // Fetch cart data
-  const fetchCart = async () => {
-    try {
-      const res = await api.get('/cart');
-      setCart(res.data.cart);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-      toast.error('Failed to load cart');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [address, setAddress] = useState("");
+  const [loadingPayment, setLoadingPayment] = useState(false);
+
+  const cart = cartData?.cart;
+  const total = cart?.totalPrice || 0;
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (cart?.address) setAddress(cart.address);
+  }, [cart]);
 
-  if (loading) return <Loader />;
+  if (isLoading)
+    return <div className="text-center text-[#00ff9d] mt-10 text-xl">Loading checkout…</div>;
 
-  if (!cart || cart.items.length === 0) {
+  if (!cart || cart.items.length === 0)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <Navbar />
-        <h2 className="text-2xl font-semibold mt-20">Your cart is empty</h2>
-        <Footer />
+      <div className="text-center text-gray-400 mt-12 text-xl">
+        Your cart is empty 🛒
       </div>
     );
-  }
 
-  // Razorpay payment handler
+  // ✅ Razorpay script loader
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  // ✅ Handle Payment
   const handlePayment = async () => {
-    if (!address) return toast.error('Please enter your delivery address');
+    setLoadingPayment(true);
+
+    const scriptLoaded = await loadRazorpayScript();
+    if (!scriptLoaded) {
+      alert("Failed to load Razorpay");
+      setLoadingPayment(false);
+      return;
+    }
 
     try {
-      // 1️⃣ Create order on backend
-      const orderRes = await api.post('/checkout', {
+      // ✅ Step 1: Create Razorpay Order
+      const paymentRes = await createPaymentOrder({
+        amount: total,
+      }).unwrap();
+
+      const razorOrder = paymentRes.order;
+
+      // ✅ Step 2: Place order temporarily
+      const orderRes = await placeOrder({
         address,
-      });
+      }).unwrap();
 
-      const { amount, id: order_id, currency } = orderRes.data;
+      const orderId = orderRes.order._id;
 
-      // 2️⃣ Razorpay options
+      // ✅ Step 3: Razorpay Payment UI
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY, // Razorpay key from .env
-        amount: amount * 100, // in paise
-        currency: currency,
-        name: 'SwiggyX',
-        description: 'Food Order Payment',
-        order_id: order_id,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: razorOrder.amount,
+        currency: "INR",
+        name: "Food Delivery",
+        description: "Order Payment",
+        order_id: razorOrder.id,
+
         handler: async function (response) {
-          // 3️⃣ Confirm payment on backend
-          try {
-            await api.post('/payment/confirmation', response);
-            toast.success('Payment successful! Your order is confirmed.');
-            window.location.href = '/myorders';
-          } catch (err) {
-            console.error(err);
-            toast.error('Payment confirmation failed');
-          }
+          // ✅ Payment success → verify backend
+          const data = {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            orderId,
+          };
+
+          await fetch(`${import.meta.env.VITE_API_URL}/api/payment/verify`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              credentials: "include",
+            },
+            body: JSON.stringify(data),
+          });
+
+          alert("✅ Payment successful!");
         },
+
         prefill: {
-          name: '',   // Optional: fetch from user profile
-          email: '',  // Optional
+          name: "Customer",
+          email: "customer@email.com",
         },
+
         theme: {
-          color: '#F97316', // Custom top-level orange
+          color: "#00ff9d",
         },
       };
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to initiate payment');
+      console.log(error);
+      alert("Payment failed");
     }
+
+    setLoadingPayment(false);
   };
 
-  const totalAmount = cart.items.reduce(
-    (acc, item) => acc + item.dish.price * item.quantity,
-    0
-  );
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <section className="p-4 max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6">Checkout</h2>
+    <div className="pb-20">
+      <h1 className="text-3xl font-bold neon-green mb-6">Checkout</h1>
 
-        <div className="bg-white p-6 rounded-lg shadow space-y-4">
-          <label className="block font-semibold">Delivery Address:</label>
-          <textarea
-            className="w-full border rounded p-2"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Enter your delivery address"
-          ></textarea>
+      {/* ✅ Address Section */}
+      <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(0,255,157,0.1)]">
+        <h2 className="text-xl font-semibold mb-4">Delivery Address</h2>
+        <textarea
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          rows={3}
+          className="w-full bg-white/10 p-3 rounded-xl outline-none text-white"
+          placeholder="Enter your address"
+        ></textarea>
+      </div>
 
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Order Summary:</h3>
-            <ul className="space-y-2">
-              {cart.items.map((item) => (
-                <li key={item.dish._id} className="flex justify-between">
-                  <span>
-                    {item.dish.name} x {item.quantity}
-                  </span>
-                  <span>₹ {item.dish.price * item.quantity}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-2 text-lg font-bold">Total: ₹ {totalAmount}</p>
-          </div>
+      {/* ✅ Order Summary */}
+      <div className="mt-8 bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(0,255,157,0.1)]">
+        <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
 
-          <button
-            onClick={handlePayment}
-            className="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded font-semibold"
+        {cart.items.map((item) => (
+          <div
+            key={item.dish}
+            className="flex justify-between mb-3 text-gray-300"
           >
-            Pay with Razorpay
-          </button>
+            <span>
+              {item.name} × {item.quantity}
+            </span>
+            <span>₹ {item.price * item.quantity}</span>
+          </div>
+        ))}
+
+        <div className="flex justify-between text-[#00ff9d] text-xl font-bold mt-4">
+          <span>Total</span>
+          <span>₹ {total}</span>
         </div>
-      </section>
-      <Footer />
+      </div>
+
+      {/* ✅ PAY NOW BUTTON */}
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        onClick={handlePayment}
+        disabled={loadingPayment}
+        className="w-full mt-8 py-4 bg-[#00ff9d] text-black text-lg font-semibold rounded-xl hover:bg-[#00ffbb] transition shadow-[0_0_20px_#00ff9d] disabled:opacity-50"
+      >
+        {loadingPayment ? "Processing..." : "Pay Now"}
+      </motion.button>
     </div>
   );
 };
 
 export default Checkout;
+
+
+
+
+
+
+
 
 
 

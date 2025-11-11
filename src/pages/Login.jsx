@@ -1,15 +1,29 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../redux/slices/userSlice"; 
-import { useNavigate } from "react-router-dom";
+// src/pages/Login.jsx
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/slices/userSlice";
+import Toast from "../components/Toast";
+import { Link, useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
-export default function Login() {
+const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { user, loading, error, message } = useSelector((s) => s.user);
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    if (error) setToast({ type: "error", message: error });
+    if (message) setToast({ type: "success", message });
+    if (user) navigate("/");
+  }, [error, message, user]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,84 +31,87 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const resultAction = await dispatch(loginUser(form));
 
-      if (loginUser.fulfilled.match(resultAction)) {
-        navigate("/");
-      } else {
-        setError(resultAction.payload || "Login failed. Try again.");
-      }
-    } catch (err) {
-      setError("Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
+    if (!form.email || !form.password) {
+      setToast({ type: "error", message: "All fields are required" });
+      return;
     }
+
+    dispatch(loginUser(form));
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 relative overflow-hidden">
-      {/* Decorative Background Blobs */}
-      <div className="absolute -top-32 -left-32 w-72 h-72 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-      <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-6">
+      {toast && <Toast type={toast.type} message={toast.message} />}
 
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-96 relative z-10">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Login</h1>
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
+        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200">
+          Login
+        </h2>
+
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
+              placeholder="Enter your email"
               value={form.email}
               onChange={handleChange}
-              placeholder="Enter your email"
-              required
-              className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 
+              text-gray-800 dark:text-gray-100 outline-none border border-gray-300 
+              dark:border-gray-600 focus:ring-2 focus:ring-green-500"
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Password
+            </label>
             <input
               type="password"
               name="password"
+              placeholder="Enter your password"
               value={form.password}
               onChange={handleChange}
-              placeholder="Enter your password"
-              required
-              className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              className="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700 
+              text-gray-800 dark:text-gray-100 outline-none border border-gray-300 
+              dark:border-gray-600 focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
+          {/* Login Button */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-xl text-white font-medium transition-all ${
-              loading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 shadow-lg"
-            }`}
+            className="w-full bg-green-600 hover:bg-green-700 text-white 
+            py-3 rounded-xl font-semibold transition disabled:opacity-50"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? <Loader small /> : "Login"}
           </button>
         </form>
 
-        <p className="text-sm text-center mt-6 text-gray-600">
+        {/* Signup link */}
+        <p className="text-center mt-6 text-gray-700 dark:text-gray-300">
           Don’t have an account?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-indigo-600 cursor-pointer hover:underline font-medium"
-          >
+          <Link to="/signup" className="text-green-600 underline">
             Sign up
-          </span>
+          </Link>
         </p>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
+
+
+
+
 
 
 
