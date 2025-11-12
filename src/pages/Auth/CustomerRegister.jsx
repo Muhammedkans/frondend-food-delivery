@@ -9,7 +9,6 @@ import { toast } from "react-hot-toast";
 const CustomerRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,97 +17,76 @@ const CustomerRegister = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     if (password !== confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
-
     setLoading(true);
     try {
-      const response = await authApi.register({
-        name,
-        email,
-        password,
-        role: "customer",
-      });
-
+      const response = await authApi.customerRegister({ name, email, password });
       if (response.data.success) {
         dispatch(loginUser(response.data.user));
-        toast.success("Registration successful!");
-        navigate("/customer/home");
+        toast.success("Registration Successful!");
+        navigate("/");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Registration failed");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Registration Failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="w-full max-w-md p-8 bg-[#111111] rounded-2xl shadow-lg border border-gray-800">
-        <h2 className="text-3xl font-bold text-white mb-6 text-center neon-text">
-          Customer Register
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-black via-gray-900 to-black">
+      <div className="w-full max-w-md p-8 bg-[#111111] rounded-3xl shadow-2xl border border-gray-800">
+        <h2 className="text-4xl font-extrabold text-neonGreen text-center mb-8">
+          Neon Eats
         </h2>
-        <form onSubmit={handleRegister} className="space-y-5">
-          <div>
-            <label className="text-gray-300 mb-1 block">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              placeholder="John Doe"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-green-500"
-            />
-          </div>
-          <div>
-            <label className="text-gray-300 mb-1 block">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="customer@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-green-500"
-            />
-          </div>
-          <div>
-            <label className="text-gray-300 mb-1 block">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="********"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-green-500"
-            />
-          </div>
-          <div>
-            <label className="text-gray-300 mb-1 block">Confirm Password</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="********"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-green-500"
-            />
-          </div>
+        <form onSubmit={handleRegister} className="space-y-6">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full p-4 rounded-xl bg-gray-900 border border-neonGreen focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full p-4 rounded-xl bg-gray-900 border border-neonGreen focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full p-4 rounded-xl bg-gray-900 border border-neonGreen focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="w-full p-4 rounded-xl bg-gray-900 border border-neonGreen focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
+          />
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-green-500 hover:bg-green-600 transition-all text-black font-bold rounded-lg"
+            className="w-full py-4 bg-neonGreen hover:bg-green-500 rounded-xl font-bold text-black text-lg transition"
           >
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
-
-        <p className="mt-4 text-gray-400 text-center">
+        <p className="mt-4 text-center text-gray-400">
           Already have an account?{" "}
-          <Link to="/auth/customer-login" className="text-green-400 hover:underline">
+          <Link to="/login/customer" className="text-neonGreen font-semibold">
             Login
           </Link>
         </p>
@@ -118,5 +96,6 @@ const CustomerRegister = () => {
 };
 
 export default CustomerRegister;
+
 
 

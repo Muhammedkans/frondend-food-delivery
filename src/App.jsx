@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Layouts
 import MainLayout from "./layout/MainLayout.jsx";
@@ -15,6 +15,9 @@ import RestaurantLogin from "./pages/Auth/RestaurantLogin.jsx";
 import RestaurantRegister from "./pages/Auth/RestaurantRegister.jsx";
 import DeliveryLogin from "./pages/Auth/DeliveryLogin.jsx";
 import DeliveryRegister from "./pages/Auth/DeliveryRegister.jsx";
+
+// Pages: Public Landing
+import LandingPage from "./pages/Public/LandingPage.jsx";
 
 // Pages: Customer
 import Home from "./pages/Customer/Home.jsx";
@@ -53,6 +56,9 @@ import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 const App = () => {
   return (
     <Routes>
+      {/* ======================= PUBLIC LANDING PAGE ======================= */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* ======================= AUTH ROUTES ======================= */}
       <Route path="/login/customer" element={<CustomerLogin />} />
       <Route path="/register/customer" element={<CustomerRegister />} />
@@ -63,7 +69,7 @@ const App = () => {
 
       {/* ======================= CUSTOMER ROUTES ======================= */}
       <Route
-        path="/"
+        path="/customer"
         element={
           <ProtectedRoute role="customer">
             <MainLayout />
@@ -129,12 +135,22 @@ const App = () => {
       </Route>
 
       {/* ======================= 404 PAGE ======================= */}
-      <Route path="*" element={<h1 className="text-center mt-20 text-3xl">404 Not Found</h1>} />
+      <Route
+        path="*"
+        element={
+          <div className="flex items-center justify-center h-screen bg-black">
+            <h1 className="text-5xl font-bold neon-text text-white">
+              404 - Page Not Found
+            </h1>
+          </div>
+        }
+      />
     </Routes>
   );
 };
 
 export default App;
+
 
 
 

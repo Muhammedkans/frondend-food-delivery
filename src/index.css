@@ -25,6 +25,21 @@ body {
 }
 
 
+
+
+.neon-text {
+  text-shadow: 0 0 5px #00ff7f, 0 0 10px #00ff7f, 0 0 20px #00ff7f;
+}
+
+.shadow-neon {
+  box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f, 0 0 30px #00ff7f;
+}
+
+.bg-neonGreen {
+  background-color: #00ff7f;
+}
+
+
 @keyframes pulseGlow {
   0%, 100% {
     box-shadow: 0 0 15px #00FFAA, 0 0 25px #00C8FF;
