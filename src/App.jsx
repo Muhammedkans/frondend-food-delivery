@@ -48,7 +48,7 @@ import DeliveryDashboard from "./pages/Delivery/Dashboard.jsx";
 import DeliveryProfile from "./pages/Delivery/Profile.jsx";
 
 // Utils
-import ProtectedRoute from "./utils/protectedRoute.js";
+import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 
 const App = () => {
   return (

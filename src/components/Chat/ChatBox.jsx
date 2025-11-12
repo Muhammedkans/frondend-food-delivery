@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import Message from "./Message";
+import Message from "../Message";
 
 const socket = io(import.meta.env.VITE_API_URL); // Connect to backend
 
