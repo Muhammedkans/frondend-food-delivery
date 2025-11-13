@@ -1,14 +1,15 @@
-// src/pages/Auth/CustomerLogin.jsx
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { motion } from "framer-motion";
 import { loginUser } from "../../slices/userSlice";
 import authApi from "../../api/authApi";
-import { toast } from "react-hot-toast";
 
 const CustomerLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,59 +21,92 @@ const CustomerLogin = () => {
       const response = await authApi.customerLogin({ email, password });
       if (response.data.success) {
         dispatch(loginUser(response.data.user));
-        toast.success("Login Successful!");
+        toast.success("Welcome back to Neon Eats!");
         navigate("/");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "Login Failed");
+    } catch (error) {
+      console.error("Login Error:", error);
+      toast.error(error.response?.data?.message || "Invalid credentials!");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-black via-gray-900 to-black">
-      <div className="w-full max-w-md p-8 bg-[#111111] rounded-3xl shadow-2xl border border-gray-800">
-        <h2 className="text-4xl font-extrabold text-neonGreen text-center mb-8">
-          Neon Eats
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
+      {/* ✨ Animated neon background glow */}
+      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-md bg-darkCard/90 p-10 rounded-3xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
+      >
+        <h1 className="text-4xl font-extrabold text-center text-neonGreen neon-text mb-2">
+          Welcome Back
+        </h1>
+        <p className="text-center text-gray-400 mb-8 text-sm tracking-wide">
+          Login to continue your neon journey 🚀
+        </p>
+
         <form onSubmit={handleLogin} className="space-y-6">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full p-4 rounded-xl bg-gray-900 border border-neonGreen focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full p-4 rounded-xl bg-gray-900 border border-neonGreen focus:outline-none focus:ring-2 focus:ring-neonGreen text-white"
-          />
-          <button
+          <div className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="input-neon"
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="input-neon"
+            />
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-neonGreen hover:bg-green-500 rounded-xl font-bold text-black text-lg transition"
+            className="w-full py-3 bg-neonGreen hover:bg-[#00ffaa]/80 text-black font-bold rounded-xl shadow-neon transition-all duration-300"
           >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+            {loading ? "Logging In..." : "Login"}
+          </motion.button>
         </form>
-        <p className="mt-4 text-center text-gray-400">
-          Don't have an account?{" "}
-          <Link to="/register/customer" className="text-neonGreen font-semibold">
+
+        <p className="mt-6 text-center text-gray-400">
+          Don’t have an account?{" "}
+          <Link
+            to="/register/customer"
+            className="text-neonGreen hover:underline font-semibold"
+          >
             Register
           </Link>
         </p>
-      </div>
+
+        <div className="text-center mt-6">
+          <Link
+            to="/"
+            className="text-gray-500 text-xs hover:text-neonGreen transition"
+          >
+            ← Back to Home
+          </Link>
+        </div>
+      </motion.div>
     </div>
   );
 };
 
 export default CustomerLogin;
+
+
 
 
