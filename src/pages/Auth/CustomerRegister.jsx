@@ -72,6 +72,7 @@ const CustomerRegister = () => {
               value={form.name}
               onChange={handleChange}
               required
+              autoComplete="name"
               className="input-neon"
             />
             <input
@@ -81,6 +82,7 @@ const CustomerRegister = () => {
               value={form.email}
               onChange={handleChange}
               required
+              autoComplete="email"
               className="input-neon"
             />
             <input
@@ -90,6 +92,7 @@ const CustomerRegister = () => {
               value={form.password}
               onChange={handleChange}
               required
+              autoComplete="new-password"
               className="input-neon"
             />
             <input
@@ -99,6 +102,7 @@ const CustomerRegister = () => {
               value={form.confirmPassword}
               onChange={handleChange}
               required
+              autoComplete="new-password"
               className="input-neon"
             />
           </div>
@@ -125,7 +129,7 @@ const CustomerRegister = () => {
           </Link>
         </p>
 
-        {/* ✅ Back to Home link (added) */}
+        {/* ✅ Back to Home link */}
         <div className="text-center mt-6">
           <Link
             to="/"
@@ -140,6 +144,7 @@ const CustomerRegister = () => {
 };
 
 export default CustomerRegister;
+
 
 
 

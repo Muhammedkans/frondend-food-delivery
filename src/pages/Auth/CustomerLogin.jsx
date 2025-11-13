@@ -58,6 +58,7 @@ const CustomerLogin = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="input-neon"
             />
 
@@ -67,6 +68,7 @@ const CustomerLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
               className="input-neon"
             />
           </div>
@@ -106,6 +108,7 @@ const CustomerLogin = () => {
 };
 
 export default CustomerLogin;
+
 
 
 
