@@ -1,13 +1,18 @@
 // src/pages/Customer/Home.jsx
 import React, { useEffect, useState } from "react";
-import restaurantApi from "../../api/restaurantApi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import restaurantApi from "../../api/restaurantApi";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+
+  // Fetch restaurants
   const fetchRestaurants = async () => {
     setLoading(true);
     try {
@@ -30,31 +35,44 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-black text-white relative">
       {/* Hero Section */}
-      <div className="relative w-full h-[400px] bg-linear-to-r from-green-600 via-green-900 to-black flex flex-col justify-center items-center text-center overflow-hidden">
+      <div className="relative w-full h-[450px] bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] flex flex-col justify-center items-center text-center overflow-hidden">
         <h1 className="text-6xl font-extrabold neon-text mb-4 animate-pulse">
           Neon Eats
         </h1>
-        <p className="text-xl text-gray-300 mb-6">
-          Discover your favorite food, delivered instantly
+        <p className="text-xl text-gray-300 mb-6 max-w-xl">
+          Discover your favorite food, delivered instantly. Experience the neon, futuristic, premium food delivery like never before.
         </p>
-        <div className="flex space-x-4">
-          <Link
-            to="/login/customer"
-            className="px-6 py-3 bg-neonGreen text-black font-bold rounded-2xl hover:bg-neonGreen/80 transition-all"
-          >
-            Customer Login
-          </Link>
-          <Link
-            to="/login/restaurant"
-            className="px-6 py-3 bg-neonGreen text-black font-bold rounded-2xl hover:bg-neonGreen/80 transition-all"
-          >
-            Restaurant Login
-          </Link>
-        </div>
+
+        {!user ? (
+          <div className="flex space-x-4">
+            <Link
+              to="/login/customer"
+              className="px-6 py-3 bg-neonGreen text-black font-bold rounded-2xl hover:bg-neonGreen/80 transition-all shadow-neon"
+            >
+              Customer Login
+            </Link>
+            <Link
+              to="/login/restaurant"
+              className="px-6 py-3 bg-neonGreen text-black font-bold rounded-2xl hover:bg-neonGreen/80 transition-all shadow-neon"
+            >
+              Restaurant Login
+            </Link>
+          </div>
+        ) : (
+          <div className="flex space-x-4">
+            <button
+              onClick={() => navigate("/customer/profile")}
+              className="px-6 py-3 bg-neonGreen text-black font-bold rounded-2xl hover:bg-neonGreen/80 transition-all shadow-neon"
+            >
+              Go to Profile
+            </button>
+          </div>
+        )}
+
         <div className="absolute bottom-0 w-full h-32 bg-linear-to-t from-black to-transparent"></div>
       </div>
 
-      {/* Restaurants Grid Section */}
+      {/* Restaurants Section */}
       <div className="max-w-7xl mx-auto p-6">
         <h2 className="text-4xl font-bold neon-text mb-8 text-center">
           Featured Restaurants
@@ -70,7 +88,7 @@ const Home = () => {
                 to={`/customer/restaurant/${restaurant._id}`}
                 className="bg-gray-900 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 hover:shadow-neon transition-transform duration-300 border border-gray-700 relative"
               >
-                {/* Neon Glow Banner */}
+                {/* Banner */}
                 <div className="relative">
                   <img
                     src={restaurant.banner || "/logo.png"}
@@ -88,7 +106,7 @@ const Home = () => {
                   </span>
                 </div>
 
-                {/* Restaurant Info */}
+                {/* Info */}
                 <div className="p-4">
                   <h3 className="text-xl font-extrabold neon-text mb-1">
                     {restaurant.name}
@@ -118,5 +136,6 @@ const Home = () => {
 };
 
 export default Home;
+
 
 

@@ -10,19 +10,30 @@ const CustomerLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // 🔹 States
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 🔹 Handle Login
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("Please fill in all fields!");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await authApi.customerLogin({ email, password });
+
       if (response.data.success) {
         dispatch(loginUser(response.data.user));
         toast.success("Welcome back to Neon Eats!");
         navigate("/");
+      } else {
+        toast.error(response.data.message || "Invalid credentials!");
       }
     } catch (error) {
       console.error("Login Error:", error);
@@ -34,7 +45,7 @@ const CustomerLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
-      {/* ✨ Animated neon background glow */}
+      {/* ✨ Animated Neon Background */}
       <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
 
       <motion.div
@@ -43,6 +54,7 @@ const CustomerLogin = () => {
         transition={{ duration: 0.8 }}
         className="w-full max-w-md bg-darkCard/90 p-10 rounded-3xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
       >
+        {/* 💫 Title */}
         <h1 className="text-4xl font-extrabold text-center text-neonGreen neon-text mb-2">
           Welcome Back
         </h1>
@@ -50,8 +62,10 @@ const CustomerLogin = () => {
           Login to continue your neon journey 🚀
         </p>
 
+        {/* 🔹 Form */}
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-4">
+            {/* Email Input */}
             <input
               type="email"
               placeholder="Email Address"
@@ -62,6 +76,7 @@ const CustomerLogin = () => {
               className="input-neon"
             />
 
+            {/* Password Input */}
             <input
               type="password"
               placeholder="Password"
@@ -73,6 +88,7 @@ const CustomerLogin = () => {
             />
           </div>
 
+          {/* Submit Button */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -84,6 +100,7 @@ const CustomerLogin = () => {
           </motion.button>
         </form>
 
+        {/* Footer Links */}
         <p className="mt-6 text-center text-gray-400">
           Don’t have an account?{" "}
           <Link
@@ -108,6 +125,7 @@ const CustomerLogin = () => {
 };
 
 export default CustomerLogin;
+
 
 
 

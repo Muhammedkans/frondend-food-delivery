@@ -29,7 +29,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-black text-white relative">
       {/* 🌟 Hero Section */}
-      <section className="relative w-full h-[500px] bg-gradient-to-r from-green-600 via-green-900 to-black flex flex-col justify-center items-center text-center overflow-hidden">
+      <section className="relative w-full h-[500px] bg-linear-to-r from-green-600 via-green-900 to-black flex flex-col justify-center items-center text-center overflow-hidden">
         <h1 className="text-6xl sm:text-7xl font-extrabold neon-text mb-4 animate-pulse">
           Neon Eats
         </h1>
@@ -58,7 +58,7 @@ const LandingPage = () => {
           </Link>
         </div>
 
-        <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-black to-transparent"></div>
+        <div className="absolute bottom-0 w-full h-40 bg-linear-to-t from-black to-transparent"></div>
       </section>
 
       {/* 🍽️ Featured Restaurants Section */}

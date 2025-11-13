@@ -13,6 +13,7 @@ const CustomerRegister = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -33,16 +34,21 @@ const CustomerRegister = () => {
       return;
     }
 
+    if (!/^\d{10}$/.test(form.phone)) {
+      toast.error("Please enter a valid 10-digit phone number!");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const response = await authApi.customerRegister({
         name: form.name.trim(),
         email: form.email.trim(),
+        phone: form.phone.trim(),
         password: form.password,
       });
 
-      // ✅ Success check
       if (response.data && response.data.success) {
         dispatch(loginUser(response.data.user));
         toast.success("Registration Successful!");
@@ -53,7 +59,6 @@ const CustomerRegister = () => {
     } catch (error) {
       console.error("Registration Error:", error);
 
-      // ✅ Handle backend error message (400)
       if (error.response && error.response.data) {
         toast.error(error.response.data.message || "Something went wrong!");
       } else {
@@ -91,6 +96,7 @@ const CustomerRegister = () => {
               autoComplete="name"
               className="input-neon"
             />
+
             <input
               name="email"
               type="email"
@@ -101,6 +107,19 @@ const CustomerRegister = () => {
               autoComplete="email"
               className="input-neon"
             />
+
+            <input
+              name="phone"
+              type="tel"
+              placeholder="+91 "
+              value={form.phone}
+              onChange={handleChange}
+              required
+              pattern="[0-9]{10}"
+              autoComplete="tel"
+              className="input-neon"
+            />
+
             <input
               name="password"
               type="password"
@@ -111,6 +130,7 @@ const CustomerRegister = () => {
               autoComplete="new-password"
               className="input-neon"
             />
+
             <input
               name="confirmPassword"
               type="password"
@@ -158,6 +178,7 @@ const CustomerRegister = () => {
 };
 
 export default CustomerRegister;
+
 
 
 
