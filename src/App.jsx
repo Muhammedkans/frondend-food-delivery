@@ -1,6 +1,7 @@
 // src/App.jsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 // Layouts
 import MainLayout from "./layout/MainLayout.jsx";
@@ -55,101 +56,108 @@ import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 
 const App = () => {
   return (
-    <Routes>
-      {/* ======================= PUBLIC LANDING PAGE ======================= */}
-      <Route path="/" element={<LandingPage />} />
+    <div>
+      {/* ✅ Toast Notification Component (Global) */}
+      <Toaster position="top-center" reverseOrder={false} />
 
-      {/* ======================= AUTH ROUTES ======================= */}
-      <Route path="/login/customer" element={<CustomerLogin />} />
-      <Route path="/register/customer" element={<CustomerRegister />} />
-      <Route path="/login/restaurant" element={<RestaurantLogin />} />
-      <Route path="/register/restaurant" element={<RestaurantRegister />} />
-      <Route path="/login/delivery" element={<DeliveryLogin />} />
-      <Route path="/register/delivery" element={<DeliveryRegister />} />
+      {/* ✅ All Application Routes */}
+      <Routes>
+        {/* ======================= PUBLIC LANDING PAGE ======================= */}
+        <Route path="/" element={<LandingPage />} />
 
-      {/* ======================= CUSTOMER ROUTES ======================= */}
-      <Route
-        path="/customer"
-        element={
-          <ProtectedRoute role="customer">
-            <MainLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<Home />} />
-        <Route path="restaurant/:id" element={<RestaurantMenu />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="checkout" element={<Checkout />} />
-        <Route path="payment" element={<Payment />} />
-        <Route path="order-success" element={<OrderSuccess />} />
-        <Route path="order-failed" element={<OrderFailed />} />
-        <Route path="order-tracking/:id" element={<OrderTracking />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="my-orders" element={<MyOrders />} />
-        <Route path="order/:id" element={<OrderDetails />} />
-        <Route path="chat" element={<Chat />} />
-        <Route path="ai-food" element={<AiFoodAssistant />} />
-      </Route>
+        {/* ======================= AUTH ROUTES ======================= */}
+        <Route path="/login/customer" element={<CustomerLogin />} />
+        <Route path="/register/customer" element={<CustomerRegister />} />
+        <Route path="/login/restaurant" element={<RestaurantLogin />} />
+        <Route path="/register/restaurant" element={<RestaurantRegister />} />
+        <Route path="/login/delivery" element={<DeliveryLogin />} />
+        <Route path="/register/delivery" element={<DeliveryRegister />} />
 
-      {/* ======================= ADMIN ROUTES ======================= */}
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute role="admin">
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<Dashboard />} />
-        <Route path="restaurants" element={<ManageRestaurants />} />
-        <Route path="orders" element={<ManageOrders />} />
-        <Route path="delivery-partners" element={<ManageDeliveryPartners />} />
-      </Route>
+        {/* ======================= CUSTOMER ROUTES ======================= */}
+        <Route
+          path="/customer"
+          element={
+            <ProtectedRoute role="customer">
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Home />} />
+          <Route path="restaurant/:id" element={<RestaurantMenu />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="payment" element={<Payment />} />
+          <Route path="order-success" element={<OrderSuccess />} />
+          <Route path="order-failed" element={<OrderFailed />} />
+          <Route path="order-tracking/:id" element={<OrderTracking />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="my-orders" element={<MyOrders />} />
+          <Route path="order/:id" element={<OrderDetails />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="ai-food" element={<AiFoodAssistant />} />
+        </Route>
 
-      {/* ======================= RESTAURANT ROUTES ======================= */}
-      <Route
-        path="/restaurant"
-        element={
-          <ProtectedRoute role="restaurant">
-            <RestaurantLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<RestaurantDashboard />} />
-        <Route path="menu" element={<RestaurantMenuPage />} />
-        <Route path="orders" element={<RestaurantOrders />} />
-        <Route path="profile" element={<RestaurantProfile />} />
-      </Route>
+        {/* ======================= ADMIN ROUTES ======================= */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="restaurants" element={<ManageRestaurants />} />
+          <Route path="orders" element={<ManageOrders />} />
+          <Route path="delivery-partners" element={<ManageDeliveryPartners />} />
+        </Route>
 
-      {/* ======================= DELIVERY ROUTES ======================= */}
-      <Route
-        path="/delivery"
-        element={
-          <ProtectedRoute role="delivery">
-            <DeliveryLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<DeliveryDashboard />} />
-        <Route path="profile" element={<DeliveryProfile />} />
-      </Route>
+        {/* ======================= RESTAURANT ROUTES ======================= */}
+        <Route
+          path="/restaurant"
+          element={
+            <ProtectedRoute role="restaurant">
+              <RestaurantLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<RestaurantDashboard />} />
+          <Route path="menu" element={<RestaurantMenuPage />} />
+          <Route path="orders" element={<RestaurantOrders />} />
+          <Route path="profile" element={<RestaurantProfile />} />
+        </Route>
 
-      {/* ======================= 404 PAGE ======================= */}
-      <Route
-        path="*"
-        element={
-          <div className="flex items-center justify-center h-screen bg-black">
-            <h1 className="text-5xl font-bold neon-text text-white">
-              404 - Page Not Found
-            </h1>
-          </div>
-        }
-      />
-    </Routes>
+        {/* ======================= DELIVERY ROUTES ======================= */}
+        <Route
+          path="/delivery"
+          element={
+            <ProtectedRoute role="delivery">
+              <DeliveryLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DeliveryDashboard />} />
+          <Route path="profile" element={<DeliveryProfile />} />
+        </Route>
+
+        {/* ======================= 404 PAGE ======================= */}
+        <Route
+          path="*"
+          element={
+            <div className="flex items-center justify-center h-screen bg-black">
+              <h1 className="text-5xl font-bold neon-text text-white">
+                404 - Page Not Found
+              </h1>
+            </div>
+          }
+        />
+      </Routes>
+    </div>
   );
 };
 
 export default App;
+
 
 
 

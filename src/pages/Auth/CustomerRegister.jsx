@@ -16,32 +16,49 @@ const CustomerRegister = () => {
     password: "",
     confirmPassword: "",
   });
+
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) =>
+  // ✅ Handle form input change
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
+  // ✅ Handle form submission
   const handleRegister = async (e) => {
     e.preventDefault();
+
     if (form.password !== form.confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
+
     setLoading(true);
+
     try {
       const response = await authApi.customerRegister({
-        name: form.name,
-        email: form.email,
+        name: form.name.trim(),
+        email: form.email.trim(),
         password: form.password,
       });
-      if (response.data.success) {
+
+      // ✅ Success check
+      if (response.data && response.data.success) {
         dispatch(loginUser(response.data.user));
         toast.success("Registration Successful!");
         navigate("/");
+      } else {
+        toast.error(response.data?.message || "Registration failed!");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "Registration Failed");
+    } catch (error) {
+      console.error("Registration Error:", error);
+
+      // ✅ Handle backend error message (400)
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message || "Something went wrong!");
+      } else {
+        toast.error("Network error! Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -49,7 +66,7 @@ const CustomerRegister = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
-      {/* ✅ Animated background glow */}
+      {/* ✨ Background glow */}
       <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
 
       <motion.div
@@ -62,7 +79,6 @@ const CustomerRegister = () => {
           Join Neon Eats
         </h1>
 
-        {/* ✅ Register Form */}
         <form onSubmit={handleRegister} className="space-y-6">
           <div className="space-y-4">
             <input
@@ -118,7 +134,6 @@ const CustomerRegister = () => {
           </motion.button>
         </form>
 
-        {/* ✅ Login Redirect */}
         <p className="mt-6 text-center text-gray-400">
           Already have an account?{" "}
           <Link
@@ -129,7 +144,6 @@ const CustomerRegister = () => {
           </Link>
         </p>
 
-        {/* ✅ Back to Home link */}
         <div className="text-center mt-6">
           <Link
             to="/"
@@ -144,6 +158,8 @@ const CustomerRegister = () => {
 };
 
 export default CustomerRegister;
+
+
 
 
 
