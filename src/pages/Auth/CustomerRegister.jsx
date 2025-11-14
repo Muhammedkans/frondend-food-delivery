@@ -1,10 +1,12 @@
+// src/pages/auth/CustomerRegister.jsx
+
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../../slices/userSlice";
 import authApi from "../../api/authApi";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
+import { setUser } from "../../slices/userSlice";
 
 const CustomerRegister = () => {
   const dispatch = useDispatch();
@@ -20,12 +22,12 @@ const CustomerRegister = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ Handle form input change
+  // Handle Input
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle form submission
+  // Handle Register
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -35,7 +37,7 @@ const CustomerRegister = () => {
     }
 
     if (!/^\d{10}$/.test(form.phone)) {
-      toast.error("Please enter a valid 10-digit phone number!");
+      toast.error("Enter a valid 10-digit mobile number!");
       return;
     }
 
@@ -49,21 +51,16 @@ const CustomerRegister = () => {
         password: form.password,
       });
 
-      if (response.data && response.data.success) {
-        dispatch(loginUser(response.data.user));
-        toast.success("Registration Successful!");
-        navigate("/");
+      if (response.data.success) {
+        dispatch(setUser({ user: response.data.user }));
+        toast.success("Registration Successful! 🎉");
+        navigate("/profile");
       } else {
-        toast.error(response.data?.message || "Registration failed!");
+        toast.error(response.data.message || "Registration failed!");
       }
     } catch (error) {
       console.error("Registration Error:", error);
-
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message || "Something went wrong!");
-      } else {
-        toast.error("Network error! Please try again.");
-      }
+      toast.error(error.response?.data?.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
@@ -71,7 +68,8 @@ const CustomerRegister = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
-      {/* ✨ Background glow */}
+
+      {/* Neon Glow Background */}
       <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
 
       <motion.div
@@ -81,7 +79,7 @@ const CustomerRegister = () => {
         className="w-full max-w-md bg-darkCard/90 p-10 rounded-3xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
       >
         <h1 className="text-4xl font-extrabold text-center text-neonGreen neon-text mb-8">
-          Join Neon Eats
+          Create Your Account
         </h1>
 
         <form onSubmit={handleRegister} className="space-y-6">
@@ -93,8 +91,8 @@ const CustomerRegister = () => {
               value={form.name}
               onChange={handleChange}
               required
-              autoComplete="name"
               className="input-neon"
+              autoComplete="name"
             />
 
             <input
@@ -104,20 +102,20 @@ const CustomerRegister = () => {
               value={form.email}
               onChange={handleChange}
               required
-              autoComplete="email"
               className="input-neon"
+              autoComplete="email"
             />
 
             <input
               name="phone"
               type="tel"
-              placeholder="+91 "
+              placeholder="Mobile Number (10 digits)"
               value={form.phone}
               onChange={handleChange}
               required
               pattern="[0-9]{10}"
-              autoComplete="tel"
               className="input-neon"
+              autoComplete="tel"
             />
 
             <input
@@ -127,8 +125,8 @@ const CustomerRegister = () => {
               value={form.password}
               onChange={handleChange}
               required
-              autoComplete="new-password"
               className="input-neon"
+              autoComplete="new-password"
             />
 
             <input
@@ -138,11 +136,12 @@ const CustomerRegister = () => {
               value={form.confirmPassword}
               onChange={handleChange}
               required
-              autoComplete="new-password"
               className="input-neon"
+              autoComplete="new-password"
             />
           </div>
 
+          {/* Register Button */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -154,6 +153,7 @@ const CustomerRegister = () => {
           </motion.button>
         </form>
 
+        {/* Footer */}
         <p className="mt-6 text-center text-gray-400">
           Already have an account?{" "}
           <Link
@@ -178,6 +178,12 @@ const CustomerRegister = () => {
 };
 
 export default CustomerRegister;
+
+
+
+
+
+
 
 
 

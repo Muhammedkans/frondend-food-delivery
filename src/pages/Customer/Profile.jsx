@@ -1,7 +1,7 @@
-// src/pages/Customer/Profile.jsx
 import React, { useEffect, useState } from "react";
-import customerApi from "../../api/customerApi";
+import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+import customerApi from "../../api/customerApi";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -10,7 +10,6 @@ const Profile = () => {
     phone: "",
     address: "",
   });
-
   const [loading, setLoading] = useState(true);
 
   // Fetch profile on mount
@@ -48,21 +47,31 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        <p className="text-xl text-green-400 animate-pulse">Loading your profile...</p>
+        <p className="text-xl text-neonGreen animate-pulse">Loading your profile...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
-      {/* Neon Heading */}
-      <h1 className="text-5xl font-extrabold neon-text mb-8 animate-pulse">
-        Your Profile
-      </h1>
+    <div className="min-h-screen bg-black text-white flex flex-col items-center p-6 relative overflow-hidden">
+      {/* ✨ Neon Glowing Background */}
+      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
 
-      <form
+      <motion.h1
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-5xl font-extrabold neon-text mb-8 animate-pulse z-10"
+      >
+        Your Profile
+      </motion.h1>
+
+      <motion.form
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-gray-900/90 backdrop-blur-xl p-6 rounded-3xl shadow-neon-green space-y-5 border border-gray-700"
+        className="w-full max-w-md bg-gray-900/90 backdrop-blur-xl p-6 rounded-3xl shadow-neon-green border border-gray-700 space-y-5 z-10"
       >
         {/* Name */}
         <div>
@@ -114,16 +123,19 @@ const Profile = () => {
         </div>
 
         {/* Submit Button */}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           type="submit"
           className="w-full py-3 bg-neonGreen text-black font-bold rounded-xl shadow-neon hover:scale-105 transition-all duration-300"
         >
           Update Profile
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
     </div>
   );
 };
 
 export default Profile;
+
 

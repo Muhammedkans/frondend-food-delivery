@@ -1,16 +1,17 @@
+// src/pages/Auth/CustomerLogin.jsx
+
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { loginUser } from "../../slices/userSlice";
 import authApi from "../../api/authApi";
+import { setUser } from "../../slices/userSlice";
 
 const CustomerLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 🔹 States
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,18 +26,18 @@ const CustomerLogin = () => {
     }
 
     setLoading(true);
+
     try {
       const response = await authApi.customerLogin({ email, password });
 
       if (response.data.success) {
-        dispatch(loginUser(response.data.user));
-        toast.success("Welcome back to Neon Eats!");
-        navigate("/");
+        dispatch(setUser({ user: response.data.user }));
+        toast.success("Welcome back to Neon Eats ⚡");
+        navigate("/customer");
       } else {
         toast.error(response.data.message || "Invalid credentials!");
       }
     } catch (error) {
-      console.error("Login Error:", error);
       toast.error(error.response?.data?.message || "Invalid credentials!");
     } finally {
       setLoading(false);
@@ -44,28 +45,36 @@ const CustomerLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
-      {/* ✨ Animated Neon Background */}
-      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
+    <div className="min-h-screen flex items-center justify-center bg-black text-white relative overflow-hidden">
 
+      {/* ✨ EXACT SAME GLOW AS REGISTER PAGE */}
+      <div className="absolute inset-0 
+        bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a]
+        blur-3xl animate-pulse">
+      </div>
+
+      {/* ✨ Login Card — Same Glow Theme */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-md bg-darkCard/90 p-10 rounded-3xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
+        transition={{ duration: 0.7 }}
+        className="w-full max-w-md bg-darkCard/90 p-10 rounded-3xl
+          shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
       >
-        {/* 💫 Title */}
+        {/* Title */}
         <h1 className="text-4xl font-extrabold text-center text-neonGreen neon-text mb-2">
           Welcome Back
         </h1>
-        <p className="text-center text-gray-400 mb-8 text-sm tracking-wide">
+
+        <p className="text-center text-gray-400 mb-8 text-sm">
           Login to continue your neon journey 🚀
         </p>
 
-        {/* 🔹 Form */}
+        {/* FORM */}
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-4">
-            {/* Email Input */}
+
+            {/* Email */}
             <input
               type="email"
               placeholder="Email Address"
@@ -76,7 +85,7 @@ const CustomerLogin = () => {
               className="input-neon"
             />
 
-            {/* Password Input */}
+            {/* Password */}
             <input
               type="password"
               placeholder="Password"
@@ -86,21 +95,22 @@ const CustomerLogin = () => {
               autoComplete="current-password"
               className="input-neon"
             />
+
           </div>
 
-          {/* Submit Button */}
+          {/* Login Button */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            type="submit"
             disabled={loading}
-            className="w-full py-3 bg-neonGreen hover:bg-[#00ffaa]/80 text-black font-bold rounded-xl shadow-neon transition-all duration-300"
+            className="w-full py-3 bg-neonGreen hover:bg-[#00ffaa]/80 text-black
+              font-bold rounded-xl shadow-neon transition-all duration-300"
           >
             {loading ? "Logging In..." : "Login"}
           </motion.button>
         </form>
 
-        {/* Footer Links */}
+        {/* FOOTER */}
         <p className="mt-6 text-center text-gray-400">
           Don’t have an account?{" "}
           <Link
@@ -119,12 +129,24 @@ const CustomerLogin = () => {
             ← Back to Home
           </Link>
         </div>
+
       </motion.div>
     </div>
   );
 };
 
 export default CustomerLogin;
+
+
+
+
+
+
+
+
+
+
+
 
 
 

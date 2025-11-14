@@ -1,71 +1,80 @@
 // src/layout/MainLayout.jsx
 import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer/Footer";
+import Navbar from "../components/Navbar/Navbar.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import { motion } from "framer-motion";
 
 const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col min-h-screen bg-darkBg text-white">
       {/* Navbar */}
-      <Navbar />
+      <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Main Content */}
-      <div className="flex flex-1">
-        {/* Optional Sidebar */}
-        <aside
-          className={`${
-            sidebarOpen ? "w-64" : "w-0"
-          } bg-gray-800 transition-all duration-300 overflow-hidden`}
+      <div className="flex flex-1 relative">
+        {/* Sidebar */}
+        <motion.aside
+          initial={{ width: 0 }}
+          animate={{ width: sidebarOpen ? 256 : 0 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="bg-darkCard shadow-neon-green overflow-hidden z-20 relative"
         >
-          <div className="p-4">
+          <div className="p-6 flex flex-col h-full">
             <button
-              className="text-gray-300 hover:text-white mb-4"
+              className="text-neonGreen font-bold mb-6 hover:text-[#00ffaa] transition-all duration-300"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              {sidebarOpen ? "Close" : "Open"}
+              {sidebarOpen ? "Close Menu ✖" : "Open Menu ☰"}
             </button>
 
-            <nav className="space-y-2">
+            <nav className="flex flex-col space-y-4 mt-4">
               <Link
-                to="/"
-                className="block p-2 rounded hover:bg-gray-700 transition"
+                to="/customer"
+                className="px-4 py-3 rounded-xl hover:bg-neonGreen/20 transition-all duration-300 text-lg font-semibold neon-text"
               >
                 Home
               </Link>
               <Link
-                to="/cart"
-                className="block p-2 rounded hover:bg-gray-700 transition"
+                to="/customer/cart"
+                className="px-4 py-3 rounded-xl hover:bg-neonGreen/20 transition-all duration-300 text-lg font-semibold neon-text"
               >
                 Cart
               </Link>
               <Link
-                to="/my-orders"
-                className="block p-2 rounded hover:bg-gray-700 transition"
+                to="/customer/my-orders"
+                className="px-4 py-3 rounded-xl hover:bg-neonGreen/20 transition-all duration-300 text-lg font-semibold neon-text"
               >
                 My Orders
               </Link>
               <Link
-                to="/profile"
-                className="block p-2 rounded hover:bg-gray-700 transition"
+                to="/customer/profile"
+                className="px-4 py-3 rounded-xl hover:bg-neonGreen/20 transition-all duration-300 text-lg font-semibold neon-text"
               >
                 Profile
               </Link>
               <Link
-                to="/ai-food-assistant"
-                className="block p-2 rounded hover:bg-gray-700 transition"
+                to="/customer/ai-food"
+                className="px-4 py-3 rounded-xl hover:bg-neonGreen/20 transition-all duration-300 text-lg font-semibold neon-text"
               >
                 AI Food Assistant
               </Link>
             </nav>
-          </div>
-        </aside>
 
-        {/* Page Content */}
-        <main className="flex-1 p-6 overflow-auto">
-          <Outlet /> {/* React Router Outlet for child pages */}
+            {/* Neon Glow Footer */}
+            <div className="mt-auto text-center text-sm text-gray-400 neon-text/50">
+              Neon Eats © 2025
+            </div>
+          </div>
+
+          {/* Neon Sidebar Glow */}
+          <div className="absolute inset-0 pointer-events-none border-r-2 border-neonGreen glow-animate"></div>
+        </motion.aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-6 overflow-auto bg-darkCard/70 backdrop-blur-xl relative shadow-neon-green rounded-3xl mx-4 my-4">
+          <Outlet />
         </main>
       </div>
 
@@ -76,5 +85,9 @@ const MainLayout = () => {
 };
 
 export default MainLayout;
+
+
+
+
 
 

@@ -1,84 +1,71 @@
 // src/slices/userSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-// ✅ Async login action (Professional approach)
-export const loginUser = createAsyncThunk(
-  "user/loginUser",
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/login`,
-        credentials,
-        { withCredentials: true } // so cookies (token) are stored properly
-      );
-      return response.data; // expected { user, token }
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
-    }
-  }
-);
+/*
+  🚀 CLEANEST POSSIBLE APPROACH
+  --------------------------------
+  You are using React Query for API calls.
+  That means Redux should store ONLY the final state:
+  - user
+  - token (if needed)
+  - minimal loading/error (only for UI consistency)
+*/
 
-// ✅ Initial State
 const initialState = {
-  user: null,        // logged-in user info
-  token: null,       // auth token
-  loading: false,    // loading indicator
-  error: null,       // error message
+  user: null,        // Logged-in user object
+  token: null,       // JWT token (optional since cookie is used)
+  loading: false,    // For UI loaders
+  error: null,       // For UI errors
 };
 
-// ✅ Slice Definition
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // ✅ Set user data (used manually if needed)
+    // -----------------------------------------------------------
+    // ✅ Set user after successful LOGIN or REGISTER
+    // -----------------------------------------------------------
     setUser(state, action) {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
+      const { user, token } = action.payload;
+      state.user = user;
+      state.token = token || null;
       state.error = null;
+      state.loading = false;
     },
 
-    // ✅ Logout or clear user
-    logoutUser(state) {
-      state.user = null;
-      state.token = null;
-      state.error = null;
-    },
-
-    // ✅ Manual loading/error management (optional)
+    // -----------------------------------------------------------
+    // ✅ Manual loader control (for premium UI smoothness)
+    // -----------------------------------------------------------
     setLoading(state, action) {
       state.loading = action.payload;
     },
+
+    // -----------------------------------------------------------
+    // ❌ Clear user on logout
+    // -----------------------------------------------------------
+    logoutUser(state) {
+      state.user = null;
+      state.token = null;
+      state.loading = false;
+      state.error = null;
+    },
+
+    // -----------------------------------------------------------
+    // ⚠️ Set error message
+    // -----------------------------------------------------------
     setError(state, action) {
       state.error = action.payload;
+      state.loading = false;
     },
-  },
-
-  // ✅ Handle async loginUser states
-  extraReducers: (builder) => {
-    builder
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Invalid credentials";
-      });
   },
 });
 
-// ✅ Export Actions
+// Export Actions
 export const { setUser, logoutUser, setLoading, setError } = userSlice.actions;
 
-// ✅ Default Export
+// Export Reducer
 export default userSlice.reducer;
+
 
 
 
