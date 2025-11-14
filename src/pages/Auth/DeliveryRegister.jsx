@@ -56,7 +56,6 @@ const DeliveryRegister = () => {
       if (response?.data?.success) {
         dispatch(setUser({ user: response.data.user }));
         toast.success("Registration successful! Complete your profile.");
-        // Delivery partners usually go to their profile/dashboard
         navigate("/delivery/profile");
       } else {
         toast.error(response?.data?.message || "Registration failed");
@@ -70,28 +69,34 @@ const DeliveryRegister = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white relative overflow-hidden">
-      {/* neon glow */}
-      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d10] via-[#00c8ff10] to-[#00ff9d10] blur-[100px] animate-pulse" />
+    <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
 
+      {/* ✨ Neon Glow Background */}
+      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse" />
+
+      {/* ✨ Registration Card */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-lg bg-[#0d0d0d]/95 p-8 rounded-2xl shadow-[0_20px_60px_rgba(0,255,170,0.06)] border border-[#1a1a1a] z-10"
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-lg bg-darkCard/90 p-10 rounded-3xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
       >
-        <h2 className="text-3xl font-extrabold text-center neon-text mb-3">Delivery Partner Register</h2>
-        <p className="text-center text-gray-400 text-sm mb-6">
+        <h1 className="text-4xl font-extrabold text-center text-neonGreen neon-text mb-4">
+          Delivery Partner Register
+        </h1>
+        <p className="text-center text-gray-400 mb-8 text-sm">
           Sign up to start receiving delivery requests and earn.
         </p>
 
-        <form onSubmit={handleRegister} className="grid grid-cols-1 gap-4">
+        <form onSubmit={handleRegister} className="space-y-4">
           <input
             name="name"
+            type="text"
             value={form.name}
             onChange={handleChange}
             placeholder="Full Name"
             required
+            autoComplete="name"
             className="input-neon"
           />
 
@@ -102,6 +107,7 @@ const DeliveryRegister = () => {
             onChange={handleChange}
             placeholder="Email Address"
             required
+            autoComplete="email"
             className="input-neon"
           />
 
@@ -112,22 +118,28 @@ const DeliveryRegister = () => {
             onChange={handleChange}
             placeholder="Mobile Number (10 digits)"
             required
+            pattern="[0-9]{10}"
+            autoComplete="tel"
             className="input-neon"
           />
 
           <input
             name="vehicleNumber"
+            type="text"
             value={form.vehicleNumber}
             onChange={handleChange}
             placeholder="Vehicle Number (optional)"
+            autoComplete="off"
             className="input-neon"
           />
 
           <input
             name="drivingLicense"
+            type="text"
             value={form.drivingLicense}
             onChange={handleChange}
             placeholder="Driving License No. (optional)"
+            autoComplete="off"
             className="input-neon"
           />
 
@@ -138,6 +150,7 @@ const DeliveryRegister = () => {
             onChange={handleChange}
             placeholder="Password"
             required
+            autoComplete="new-password"
             className="input-neon"
           />
 
@@ -148,26 +161,29 @@ const DeliveryRegister = () => {
             onChange={handleChange}
             placeholder="Confirm Password"
             required
+            autoComplete="new-password"
             className="input-neon"
           />
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-neonGreen hover:bg-neonGreen/90 text-black font-bold rounded-lg shadow-[0_12px_40px_rgba(0,255,170,0.12)] transition"
+            className="w-full py-3 bg-neonGreen hover:bg-[#00ffaa]/80 text-black font-bold rounded-xl shadow-neon transition-all duration-300"
           >
             {loading ? "Registering..." : "Register as Delivery"}
-          </button>
+          </motion.button>
         </form>
 
-        <p className="mt-4 text-center text-gray-400 text-sm">
+        <p className="mt-6 text-center text-gray-400 text-sm">
           Already have an account?{" "}
           <Link to="/login/delivery" className="text-neonGreen hover:underline font-semibold">
             Login
           </Link>
         </p>
 
-        <div className="text-center mt-4">
+        <div className="text-center mt-6">
           <Link to="/" className="text-gray-500 text-xs hover:text-neonGreen transition">
             ← Back to Home
           </Link>
@@ -178,4 +194,7 @@ const DeliveryRegister = () => {
 };
 
 export default DeliveryRegister;
+
+
+
 

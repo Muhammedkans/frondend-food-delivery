@@ -54,17 +54,19 @@ const DeliveryLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white relative overflow-hidden">
-      {/* subtle neon glow */}
-      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d10] via-[#00c8ff10] to-[#00ff9d10] blur-[100px] animate-pulse"></div>
+    <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
 
+      {/* ✨ Premium Neon Background Glow */}
+      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
+
+      {/* ✨ Login Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md bg-[#0d0d0d]/90 p-8 rounded-2xl shadow-[0_10px_40px_rgba(0,255,170,0.06)] border border-[#1a1a1a] z-10"
+        className="w-full max-w-md bg-darkCard/90 p-8 rounded-2xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
       >
-        <h2 className="text-3xl font-extrabold text-center neon-text mb-4">
+        <h2 className="text-3xl font-extrabold text-center text-neonGreen neon-text mb-4">
           Delivery Partner Login
         </h2>
         <p className="text-center text-gray-400 mb-6 text-sm">
@@ -72,36 +74,32 @@ const DeliveryLogin = () => {
         </p>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="text-gray-300 mb-1 block">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="delivery@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-[#00ffaa]"
-            />
-          </div>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="delivery@example.com"
+            autoComplete="email"
+            className="input-neon"
+          />
 
-          <div>
-            <label className="text-gray-300 mb-1 block">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-[#00ffaa]"
-            />
-          </div>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="Password"
+            autoComplete="current-password"
+            className="input-neon"
+          />
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full py-3 mt-2 bg-neonGreen text-black font-bold rounded-lg shadow-[0_8px_30px_rgba(0,255,170,0.12)]"
+            className="w-full py-3 bg-neonGreen hover:bg-[#00ffaa]/80 text-black font-bold rounded-xl shadow-neon transition-all duration-300"
           >
             {loading ? "Logging in..." : "Login"}
           </motion.button>
@@ -125,4 +123,5 @@ const DeliveryLogin = () => {
 };
 
 export default DeliveryLogin;
+
 

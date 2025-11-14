@@ -15,34 +15,30 @@ const RestaurantLogin = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 🔹 Handle Login
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error("Please fill both email and password.");
+      toast.error("Please fill in all fields!");
       return;
     }
 
     setLoading(true);
     try {
-      // use the correct api call
       const response = await authApi.restaurantLogin({ email, password });
 
       if (response?.data?.success) {
         const user = response.data.user;
 
-        // role check: ensure this is a restaurant account
         if (user.role !== "restaurant") {
           toast.error("You are not authorized as a restaurant user.");
           setLoading(false);
           return;
         }
 
-        // save user in redux
         dispatch(setUser({ user }));
-
-        toast.success("Welcome back — Restaurant dashboard loading!");
-        // redirect to restaurant dashboard (index of /restaurant)
+        toast.success("Welcome back — Restaurant Dashboard loading!");
         navigate("/restaurant");
       } else {
         toast.error(response?.data?.message || "Login failed");
@@ -56,64 +52,77 @@ const RestaurantLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white relative overflow-hidden">
-      {/* subtle neon glow */}
-      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d10] via-[#00c8ff10] to-[#00ff9d10] blur-[100px] animate-pulse"></div>
+    <div className="min-h-screen flex items-center justify-center bg-darkBg text-white relative overflow-hidden">
 
+      {/* ✨ Premium Neon Background Glow */}
+      <div className="absolute inset-0 bg-linear-to-r from-[#00ff9d1a] via-[#00c8ff1a] to-[#00ff9d1a] blur-3xl animate-pulse"></div>
+
+      {/* ✨ Login Card */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 35 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md bg-[#0d0d0d]/90 p-8 rounded-2xl shadow-[0_10px_40px_rgba(0,255,170,0.06)] border border-[#1a1a1a] z-10"
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-md bg-darkCard/90 p-10 rounded-3xl shadow-neon-green border border-gray-800 backdrop-blur-xl z-10"
       >
-        <h2 className="text-3xl font-extrabold text-center neon-text mb-4">Restaurant Login</h2>
-        <p className="text-center text-gray-400 mb-6 text-sm">Access your restaurant dashboard and manage orders.</p>
+        <h1 className="text-4xl font-extrabold text-center text-neonGreen neon-text mb-2">
+          Restaurant Login
+        </h1>
+        <p className="text-center text-gray-400 mb-8 text-sm">
+          Access your restaurant dashboard and manage orders 🚀
+        </p>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="text-gray-300 text-sm mb-1 block">Email</label>
+        {/* FORM */}
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-4">
             <input
               type="email"
+              placeholder="restaurant@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="restaurant@example.com"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-[#00ffaa]"
+              autoComplete="email"
+              className="input-neon"
             />
-          </div>
 
-          <div>
-            <label className="text-gray-300 text-sm mb-1 block">Password</label>
             <input
               type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-[#00ffaa]"
+              autoComplete="current-password"
+              className="input-neon"
             />
           </div>
 
+          {/* LOGIN BUTTON */}
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full py-3 mt-2 bg-neonGreen text-black font-bold rounded-lg shadow-[0_8px_30px_rgba(0,255,170,0.12)]"
+            className="w-full py-3 bg-neonGreen hover:bg-[#00ffaa]/80 text-black font-bold rounded-xl shadow-neon transition-all duration-300"
           >
             {loading ? "Logging in..." : "Login"}
           </motion.button>
         </form>
 
-        <p className="mt-5 text-center text-gray-400 text-sm">
+        {/* FOOTER */}
+        <p className="mt-6 text-center text-gray-400">
           Don't have an account?{" "}
-          <Link to="/register/restaurant" className="text-neonGreen hover:underline font-semibold">
+          <Link
+            to="/register/restaurant"
+            className="text-neonGreen hover:underline font-semibold"
+          >
             Register
           </Link>
         </p>
 
-        <div className="text-center mt-4">
-          <Link to="/" className="text-gray-500 text-xs hover:text-neonGreen transition">
+        <div className="text-center mt-6">
+          <Link
+            to="/"
+            className="text-gray-500 text-xs hover:text-neonGreen transition"
+          >
             ← Back to Home
           </Link>
         </div>
@@ -123,4 +132,5 @@ const RestaurantLogin = () => {
 };
 
 export default RestaurantLogin;
+
 
