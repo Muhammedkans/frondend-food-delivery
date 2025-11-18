@@ -58,7 +58,7 @@ import ProtectedRoute from "./utils/ProtectedRoute.jsx";
 const App = () => {
   const { user } = useSelector((state) => state.user);
 
-  // 🔥 Auto Redirect Like Swiggy / Zomato
+  // 🔥 Auto Redirect Based on Role
   const redirectUser = () => {
     if (!user) return null;
 
@@ -83,38 +83,17 @@ const App = () => {
       <Suspense fallback={<div className="text-white p-10">Loading...</div>}>
         <Routes>
           {/* ---------------- PUBLIC LANDING ---------------- */}
-          <Route
-            path="/"
-            element={user ? redirectUser() : <LandingPage />}
-          />
+          <Route path="/" element={user ? redirectUser() : <LandingPage />} />
 
-          {/* ---------------- AUTH PAGES ---------------- */}
-          <Route
-            path="/login/customer"
-            element={user ? redirectUser() : <CustomerLogin />}
-          />
-          <Route
-            path="/register/customer"
-            element={user ? redirectUser() : <CustomerRegister />}
-          />
+          {/* ---------------- AUTH ROUTES ---------------- */}
+          <Route path="/login/customer" element={user ? redirectUser() : <CustomerLogin />} />
+          <Route path="/register/customer" element={user ? redirectUser() : <CustomerRegister />} />
 
-          <Route
-            path="/login/restaurant"
-            element={user ? redirectUser() : <RestaurantLogin />}
-          />
-          <Route
-            path="/register/restaurant"
-            element={user ? redirectUser() : <RestaurantRegister />}
-          />
+          <Route path="/login/restaurant" element={user ? redirectUser() : <RestaurantLogin />} />
+          <Route path="/register/restaurant" element={user ? redirectUser() : <RestaurantRegister />} />
 
-          <Route
-            path="/login/delivery"
-            element={user ? redirectUser() : <DeliveryLogin />}
-          />
-          <Route
-            path="/register/delivery"
-            element={user ? redirectUser() : <DeliveryRegister />}
-          />
+          <Route path="/login/delivery" element={user ? redirectUser() : <DeliveryLogin />} />
+          <Route path="/register/delivery" element={user ? redirectUser() : <DeliveryRegister />} />
 
           {/* ---------------- CUSTOMER ROUTES ---------------- */}
           <Route
@@ -187,10 +166,8 @@ const App = () => {
           <Route
             path="*"
             element={
-              <div className="flex items-center justify-center h-screen bg-linear-to-br from-black to-[#0f0f0f]">
-                <h1 className="text-6xl font-bold text-white drop-shadow-[0_0_15px_#00f6ff]">
-                  404 – Page Not Found
-                </h1>
+              <div className="flex items-center justify-center h-screen bg-black">
+                <h1 className="text-6xl font-bold text-white">404 – Page Not Found</h1>
               </div>
             }
           />
@@ -201,6 +178,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 

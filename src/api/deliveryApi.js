@@ -2,47 +2,52 @@
 import axiosClient from "./axiosClient";
 
 const deliveryApi = {
-    // ------------------------------------
+
+    // ------------------------------------------------
     // ✅ GO ONLINE / GO OFFLINE
-    // ------------------------------------
-    toggleOnlineStatus: () =>
+    // ------------------------------------------------
+    toggleOnlineStatus: () => 
         axiosClient.put("/delivery/online"),
 
-    // ------------------------------------
+    // ------------------------------------------------
     // ✅ UPDATE LIVE LOCATION
-    // ------------------------------------
-    updateLocation: (data) =>
+    // ------------------------------------------------
+    updateLocation: (data) => 
         axiosClient.put("/delivery/location", data),
 
-    // ------------------------------------
-    // ✅ ACCEPT ORDER
-    // ------------------------------------
-    acceptOrder: (orderId) =>
-        axiosClient.put(`/delivery/accept/${orderId}`),
+    // ------------------------------------------------
+    // ✅ UPDATE ORDER STATUS
+    // (accepted, rejected, picked_up, delivered)
+    // ------------------------------------------------
+    updateStatus: (orderId, status) => 
+        axiosClient.put(`/delivery/status/${orderId}`, { status }),
 
-    // ------------------------------------
-    // ✅ REJECT ORDER
-    // ------------------------------------
-    rejectOrder: (orderId) =>
-        axiosClient.put(`/delivery/reject/${orderId}`),
-
-    // ------------------------------------
-    // ✅ MARK ORDER AS PICKED UP
-    // ------------------------------------
-    markPickedUp: (orderId) =>
-        axiosClient.put(`/delivery/picked-up/${orderId}`),
-
-    // ------------------------------------
-    // ✅ MARK ORDER AS DELIVERED
-    // ------------------------------------
-    markDelivered: (orderId) =>
-        axiosClient.put(`/delivery/delivered/${orderId}`),
-
-    // ------------------------------------
+    // ------------------------------------------------
     // ✅ DELIVERY DASHBOARD
-    // ------------------------------------
-    getDashboard: () =>
+    // ------------------------------------------------
+    getDashboard: () => 
         axiosClient.get("/delivery/dashboard"),
+
+    // ------------------------------------------------
+    // 👤 GET DELIVERY PARTNER PROFILE
+    // ------------------------------------------------
+    getProfile: () => 
+        axiosClient.get("/delivery/profile"),
+
+    // ------------------------------------------------
+    // ✏️ UPDATE DELIVERY PROFILE
+    // (profilePhoto + licenseImage → formData)
+    // ------------------------------------------------
+    updateProfile: (formData) => 
+        axiosClient.put("/delivery/profile", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }),
 };
 
 export default deliveryApi;
+
+
+
+
