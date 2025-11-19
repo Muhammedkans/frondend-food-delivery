@@ -1,4 +1,3 @@
-// src/pages/Delivery/Profile.jsx
 import React, { useEffect, useState } from "react";
 import deliveryApi from "../../api/deliveryApi";
 import { toast } from "react-toastify";
@@ -87,11 +86,11 @@ const Profile = () => {
     try {
       const formData = new FormData();
 
-      // Append all text fields
+      // Append text fields
       const fields = ["name", "email", "phone", "vehicle", "experience", "emergencyContact"];
       fields.forEach((key) => formData.append(key, profile[key] ?? ""));
 
-      // Append files if selected
+      // Append files
       if (profilePhotoFile) formData.append("profilePhoto", profilePhotoFile);
       if (licenseFile) formData.append("licenseImage", licenseFile);
 
@@ -178,8 +177,8 @@ const Profile = () => {
         onSubmit={handleUpdate}
         className="bg-[#0f172a]/70 backdrop-blur-xl p-8 rounded-3xl border border-gray-700 shadow-xl max-w-2xl mx-auto"
       >
-        <FileInput label="Change Profile Photo" name="profilePhoto" onChange={handleProfilePhotoChange} />
-        <FileInput label="Upload License Image" name="licenseImage" onChange={handleLicenseChange} />
+        <FileInput label="Change Profile Photo" name="profilePhoto" onChange={handleProfilePhotoChange} previewFile={profilePhotoFile || profile.profilePhoto} />
+        <FileInput label="Upload License Image" name="licenseImage" onChange={handleLicenseChange} previewFile={licenseFile || profile.licenseImage} />
 
         <div className="flex flex-col gap-4 mt-4">
           <InputField label="Full Name" name="name" value={profile.name} onChange={handleInputChange} />
@@ -229,19 +228,30 @@ const InputField = ({ label, ...props }) => (
   </div>
 );
 
-const FileInput = ({ label, name, onChange }) => {
+const FileInput = ({ label, name, onChange, previewFile }) => {
   const inputId = `file-input-${name}`;
+  const previewSrc = previewFile ? (typeof previewFile === "string" ? previewFile : URL.createObjectURL(previewFile)) : null;
+
   return (
     <div className="flex flex-col items-center mb-6">
       <label htmlFor={inputId} className="cursor-pointer text-neonGreen hover:text-neonBlue transition">
         {label}
       </label>
+
+      {previewSrc && (
+        <img
+          src={previewSrc}
+          alt="preview"
+          className="w-24 h-24 rounded-full object-cover mb-2 border border-gray-700"
+        />
+      )}
+
       <input
         id={inputId}
         type="file"
         name={name}
         onChange={onChange}
-        accept=".jpg,.jpeg,.png,.avif,.webp"
+        accept="image/*"
         className="hidden"
       />
     </div>
@@ -249,6 +259,7 @@ const FileInput = ({ label, name, onChange }) => {
 };
 
 export default Profile;
+
 
 
 

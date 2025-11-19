@@ -16,40 +16,28 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/"); // after logout go to landing
+    navigate("/"); 
   };
 
-  // 🔥 Role-based Home path (real-world behavior)
   const getHomePath = () => {
     if (!user) return "/";
     switch (user.role) {
-      case "customer":
-        return "/customer";
-      case "restaurant":
-        return "/restaurant";
-      case "delivery":
-        return "/delivery";
-      case "admin":
-        return "/admin";
-      default:
-        return "/";
+      case "customer": return "/customer";
+      case "restaurant": return "/restaurant";
+      case "delivery": return "/delivery";
+      case "admin": return "/admin";
+      default: return "/";
     }
   };
 
-  // 🔥 Role-based Profile path
   const getProfilePath = () => {
     if (!user) return "/login/customer";
     switch (user.role) {
-      case "customer":
-        return "/customer/profile";
-      case "restaurant":
-        return "/restaurant/profile";
-      case "delivery":
-        return "/delivery/profile";
-      case "admin":
-        return "/admin"; // or /admin/profile if you create it
-      default:
-        return "/customer/profile";
+      case "customer": return "/customer/profile";
+      case "restaurant": return "/restaurant/profile";
+      case "delivery": return "/delivery/profile";
+      case "admin": return "/admin";
+      default: return "/customer/profile";
     }
   };
 
@@ -57,14 +45,14 @@ const Navbar = () => {
   const profilePath = getProfilePath();
 
   return (
-    <nav className="bg-darkCard/95 shadow-neon-green sticky top-0 w-full z-50 backdrop-blur-lg border-b border-gray-800">
+    <nav className="bg-darkCard/95 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800 shadow-neon-green">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="shrink-0 flex items-center">
             <Link
               to={homePath}
-              className="text-2xl font-extrabold text-neonGreen hover:text-[#00ffaa] transition-colors neon-text tracking-wide"
+              className="text-2xl font-extrabold text-neonGreen neon-text tracking-wide hover:text-[#00ffaa] transition-colors glow-neon"
             >
               Neon Eats
             </Link>
@@ -72,26 +60,24 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center md:space-x-6 text-sm lg:text-base">
-            {/* Home (role-aware) */}
             <NavLink
               to={homePath}
               className={({ isActive }) =>
                 `pb-1 ${
                   isActive
-                    ? "text-neonGreen font-semibold border-b-2 border-neonGreen"
-                    : "text-gray-200 hover:text-[#00ffaa] transition-colors"
+                    ? "text-neonGreen font-semibold border-b-2 border-neonGreen glow-neon"
+                    : "text-gray-200 hover:text-neonGreen transition-colors glow-neon"
                 }`
               }
             >
               Home
             </NavLink>
 
-            {/* Customer-specific items */}
             {user?.role === "customer" && (
               <>
                 <NavLink
                   to="/customer/cart"
-                  className="relative text-gray-200 hover:text-[#00ffaa] transition-colors"
+                  className="relative text-gray-200 hover:text-neonGreen transition-colors glow-neon"
                 >
                   <FaShoppingCart size={20} />
                   <span className="absolute -top-2 -right-2 bg-red-600 text-xs rounded-full px-1">
@@ -103,8 +89,8 @@ const Navbar = () => {
                   className={({ isActive }) =>
                     `pb-1 ${
                       isActive
-                        ? "text-neonGreen font-semibold border-b-2 border-neonGreen"
-                        : "text-gray-200 hover:text-[#00ffaa] transition-colors"
+                        ? "text-neonGreen font-semibold border-b-2 border-neonGreen glow-neon"
+                        : "text-gray-200 hover:text-neonGreen transition-colors glow-neon"
                     }`
                   }
                 >
@@ -113,25 +99,22 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Auth / Profile */}
             {user ? (
               <div className="relative group">
-                <button className="flex items-center space-x-2 text-gray-200 hover:text-[#00ffaa] transition-colors">
+                <button className="flex items-center space-x-2 text-gray-200 hover:text-neonGreen transition-colors glow-neon">
                   <FaUserCircle size={22} />
-                  <span className="max-w-[120px] truncate">
-                    {user.name}
-                  </span>
+                  <span className="max-w-[120px] truncate">{user.name}</span>
                 </button>
                 <div className="absolute right-0 mt-2 w-44 bg-darkCard rounded-lg shadow-neon-green opacity-0 group-hover:opacity-100 transition-opacity neon-text border border-gray-700">
                   <Link
                     to={profilePath}
-                    className="block px-4 py-2 text-sm hover:bg-neonGreen/20 rounded-t-lg"
+                    className="block px-4 py-2 text-sm hover:bg-neonGreen/20 rounded-t-lg glow-neon"
                   >
                     Profile
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-neonGreen/20 rounded-b-lg"
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-neonGreen/20 rounded-b-lg glow-neon"
                   >
                     Logout
                   </button>
@@ -141,13 +124,13 @@ const Navbar = () => {
               <>
                 <NavLink
                   to="/login/customer"
-                  className="text-gray-200 hover:text-[#00ffaa] transition-colors"
+                  className="text-gray-200 hover:text-neonGreen transition-colors glow-neon"
                 >
                   Login
                 </NavLink>
                 <NavLink
                   to="/register/customer"
-                  className="text-gray-200 hover:text-[#00ffaa] transition-colors"
+                  className="text-gray-200 hover:text-neonGreen transition-colors glow-neon"
                 >
                   Register
                 </NavLink>
@@ -157,7 +140,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
-            <button onClick={toggleMenu} className="focus:outline-none text-gray-200">
+            <button onClick={toggleMenu} className="focus:outline-none text-gray-200 glow-neon">
               {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
             </button>
           </div>
@@ -167,28 +150,26 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-darkCard/95 px-4 pt-2 pb-4 space-y-2 border-t border-gray-700 neon-text animate-pulseGlow">
-          {/* Home */}
           <NavLink
             to={homePath}
-            className="block text-white hover:text-neonGreen transition-colors"
+            className="block text-white hover:text-neonGreen transition-colors glow-neon"
             onClick={toggleMenu}
           >
             Home
           </NavLink>
 
-          {/* Customer-only options */}
           {user?.role === "customer" && (
             <>
               <NavLink
                 to="/customer/cart"
-                className="block text-white hover:text-neonGreen transition-colors"
+                className="block text-white hover:text-neonGreen transition-colors glow-neon"
                 onClick={toggleMenu}
               >
                 Cart
               </NavLink>
               <NavLink
                 to="/customer/my-orders"
-                className="block text-white hover:text-neonGreen transition-colors"
+                className="block text-white hover:text-neonGreen transition-colors glow-neon"
                 onClick={toggleMenu}
               >
                 My Orders
@@ -200,7 +181,7 @@ const Navbar = () => {
             <>
               <NavLink
                 to={profilePath}
-                className="block text-white hover:text-neonGreen transition-colors"
+                className="block text-white hover:text-neonGreen transition-colors glow-neon"
                 onClick={toggleMenu}
               >
                 Profile
@@ -210,7 +191,7 @@ const Navbar = () => {
                   handleLogout();
                   toggleMenu();
                 }}
-                className="block w-full text-left text-white hover:text-neonGreen transition-colors"
+                className="block w-full text-left text-white hover:text-neonGreen transition-colors glow-neon"
               >
                 Logout
               </button>
@@ -219,14 +200,14 @@ const Navbar = () => {
             <>
               <NavLink
                 to="/login/customer"
-                className="block text-white hover:text-neonGreen transition-colors"
+                className="block text-white hover:text-neonGreen transition-colors glow-neon"
                 onClick={toggleMenu}
               >
                 Login
               </NavLink>
               <NavLink
                 to="/register/customer"
-                className="block text-white hover:text-neonGreen transition-colors"
+                className="block text-white hover:text-neonGreen transition-colors glow-neon"
                 onClick={toggleMenu}
               >
                 Register
@@ -235,11 +216,14 @@ const Navbar = () => {
           )}
         </div>
       )}
+
+      
     </nav>
   );
 };
 
 export default Navbar;
+
 
 
 

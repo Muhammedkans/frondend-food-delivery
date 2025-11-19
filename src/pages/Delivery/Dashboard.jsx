@@ -121,7 +121,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-b from-[#05070f] via-[#0a1024] to-[#05070f] text-gray-100">
+    <div className="p-6 min-h-screen bg-linear-to-b from-[#05070f] via-[#0a1024] to-[#05070f] text-gray-100">
       <LiveTracking isOnline={isOnline} orderId={activeOrderId} />
 
       <header className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -138,8 +138,8 @@ const Dashboard = () => {
           onClick={toggleOnline}
           className={`px-6 py-3 rounded-2xl font-semibold tracking-wide transition shadow-neon ${
             isOnline
-              ? "bg-gradient-to-r from-emerald-400 to-lime-400 text-black"
-              : "bg-gradient-to-r from-blue-500 to-indigo-500 text-white"
+              ? "bg-linear-to-r from-emerald-400 to-lime-400 text-black"
+              : "bg-linear-to-r from-blue-500 to-indigo-500 text-white"
           }`}
         >
           {isOnline ? "You are Online" : "Go Online"}
@@ -205,7 +205,7 @@ const SummaryGrid = ({ summary, weeklyTotal }) => {
           <p className="text-xs text-gray-500 mt-2">{card.hint}</p>
         </article>
       ))}
-      <article className="rounded-3xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/10 to-lime-400/10 p-5">
+      <article className="rounded-3xl border border-emerald-400/30 bg-linear-to-br from-emerald-500/10 to-lime-400/10 p-5">
         <p className="text-sm uppercase tracking-widest text-emerald-200">
           Weekly payout
         </p>
@@ -324,7 +324,7 @@ const PerformanceInsights = ({ insights }) => {
         ))}
       </div>
 
-      <footer className="rounded-2xl bg-gradient-to-r from-emerald-500/10 to-lime-500/10 border border-emerald-400/20 p-4 text-sm text-emerald-100">
+      <footer className="rounded-2xl bg-linear-to-r from-emerald-500/10 to-lime-500/10 border border-emerald-400/20 p-4 text-sm text-emerald-100">
         Payout pending: ₹{insights.pendingPayout.toLocaleString()} / ₹
         {insights.payoutThreshold.toLocaleString()}
       </footer>
@@ -355,7 +355,7 @@ const OrdersPanel = ({ orders, onSelect, selectedId, onStatusChange }) => {
         <p className="text-xs text-gray-500">Tap a card to focus & navigate</p>
       </header>
 
-      <div className="space-y-4 max-h-[28rem] overflow-y-auto pr-2">
+      <div className="space-y-4 max-h-112 overflow-y-auto pr-2">
         {orders.map((order) => (
           <article
             key={order._id}
