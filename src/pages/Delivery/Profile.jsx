@@ -4,16 +4,13 @@ import deliveryApi from "../../api/deliveryApi";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 
-// ---------------------------
-// PROFILE PAGE
-// ---------------------------
 const Profile = () => {
   const [profile, setProfile] = useState({
     name: "",
     email: "",
     phone: "",
     vehicle: "",
-    experience: "",
+    experience: 0,
     emergencyContact: "",
     profilePhoto: "",
     licenseImage: "",
@@ -28,29 +25,17 @@ const Profile = () => {
   const [isOnline, setIsOnline] = useState(false);
 
   // ---------------------------
-  // FETCH DELIVERY PROFILE
+  // FETCH PROFILE
   // ---------------------------
   const fetchProfile = async () => {
     try {
       const res = await deliveryApi.getProfile();
       const data = res.data?.deliveryPartner;
       if (!data) return toast.error("Profile data missing!");
-
-      setProfile({
-        name: data.name || "",
-        email: data.email || "",
-        phone: data.phone || "",
-        vehicle: data.vehicle || "",
-        experience: data.experience || 0,
-        emergencyContact: data.emergencyContact || "",
-        profilePhoto: data.profilePhoto || "",
-        licenseImage: data.licenseImage || "",
-        earnings: data.earnings || 0,
-        isOnline: data.isOnline || false,
-      });
+      setProfile(data);
       setIsOnline(data.isOnline || false);
     } catch (error) {
-      console.error(error);
+      console.error("Fetch profile error:", error);
       toast.error("Failed to load profile.");
     } finally {
       setLoading(false);
@@ -63,8 +48,9 @@ const Profile = () => {
   const toggleOnline = async () => {
     try {
       const res = await deliveryApi.toggleOnlineStatus();
-      const updatedStatus = res.data?.isOnline;
-      setIsOnline(updatedStatus);
+      const newStatus = res.data?.isOnline;
+      setIsOnline(newStatus);
+      setProfile((prev) => ({ ...prev, isOnline: newStatus }));
       toast.success(res.data?.message || "Status updated");
     } catch (err) {
       console.error(err);
@@ -79,8 +65,17 @@ const Profile = () => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleProfilePhotoChange = (e) => setProfilePhotoFile(e.target.files[0]);
-  const handleLicenseChange = (e) => setLicenseFile(e.target.files[0]);
+  const handleProfilePhotoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfilePhotoFile(e.target.files[0]);
+    }
+  };
+
+  const handleLicenseChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setLicenseFile(e.target.files[0]);
+    }
+  };
 
   // ---------------------------
   // UPDATE PROFILE
@@ -89,34 +84,37 @@ const Profile = () => {
     e.preventDefault();
     setUpdating(true);
 
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-    if (profilePhotoFile && !allowedTypes.includes(profilePhotoFile.type)) {
-      toast.error("Only JPG, JPEG, PNG allowed for profile photo");
-      setUpdating(false);
-      return;
-    }
-    if (licenseFile && !allowedTypes.includes(licenseFile.type)) {
-      toast.error("Only JPG, JPEG, PNG allowed for license image");
-      setUpdating(false);
-      return;
-    }
-
     try {
       const formData = new FormData();
-      formData.append("name", profile.name);
-      formData.append("email", profile.email);
-      formData.append("phone", profile.phone);
-      formData.append("vehicle", profile.vehicle);
-      formData.append("experience", profile.experience);
-      formData.append("emergencyContact", profile.emergencyContact);
+
+      // Append all text fields
+      const fields = ["name", "email", "phone", "vehicle", "experience", "emergencyContact"];
+      fields.forEach((key) => formData.append(key, profile[key] ?? ""));
+
+      // Append files if selected
       if (profilePhotoFile) formData.append("profilePhoto", profilePhotoFile);
       if (licenseFile) formData.append("licenseImage", licenseFile);
 
-      await deliveryApi.updateProfile(formData);
-      toast.success("Profile updated successfully!");
-      fetchProfile();
+      const res = await deliveryApi.updateProfile(formData);
+
+      if (res.data?.success) {
+        toast.success("Profile updated successfully!");
+
+        const updatedProfile = res.data.deliveryPartner;
+        setProfile((prev) => ({
+          ...prev,
+          ...updatedProfile,
+          profilePhoto: updatedProfile.profilePhoto || (profilePhotoFile ? URL.createObjectURL(profilePhotoFile) : prev.profilePhoto),
+          licenseImage: updatedProfile.licenseImage || (licenseFile ? URL.createObjectURL(licenseFile) : prev.licenseImage),
+        }));
+
+        setProfilePhotoFile(null);
+        setLicenseFile(null);
+      } else {
+        toast.error(res.data?.message || "Failed to update profile.");
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Update profile error:", error);
       toast.error(error.response?.data?.message || "Failed to update profile.");
     } finally {
       setUpdating(false);
@@ -127,20 +125,15 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  if (loading)
-    return <p className="text-neonGreen text-xl p-6">Loading profile...</p>;
+  if (loading) return <p className="text-neonGreen text-xl p-6">Loading profile...</p>;
 
   return (
-    <div className="p-6 bg-gradient-to-b from-[#0a0f1f] to-[#111827] min-h-screen text-gray-200">
+    <div className="p-6 bg-linear-to-b from-[#0a0f1f] to-[#111827] min-h-screen text-gray-200">
       {/* HEADER */}
       <div className="flex flex-col items-center mb-10">
         <div className="relative">
           <motion.img
-            src={
-              profilePhotoFile
-                ? URL.createObjectURL(profilePhotoFile)
-                : profile.profilePhoto || "/logo.png"
-            }
+            src={profilePhotoFile ? URL.createObjectURL(profilePhotoFile) : profile.profilePhoto || "/logo.png"}
             alt="avatar"
             className="w-32 h-32 rounded-full border-4 border-neonGreen object-cover shadow-neon"
             initial={{ scale: 0 }}
@@ -148,12 +141,10 @@ const Profile = () => {
             transition={{ duration: 0.5 }}
           />
           <motion.span
-            className={`absolute bottom-2 right-2 w-4 h-4 rounded-full ${
-              isOnline ? "bg-green-400" : "bg-red-500"
-            } border-2 border-black`}
+            className={`absolute bottom-2 right-2 w-4 h-4 rounded-full ${isOnline ? "bg-green-400" : "bg-red-500"} border-2 border-black`}
             animate={{ scale: [1, 1.5, 1] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
-          ></motion.span>
+          />
         </div>
 
         <motion.h1
@@ -168,9 +159,7 @@ const Profile = () => {
 
         <motion.button
           onClick={toggleOnline}
-          className={`mt-2 px-6 py-2 rounded-xl font-bold transition shadow-lg ${
-            isOnline ? "bg-neonGreen text-black" : "bg-neonBlue text-white"
-          }`}
+          className={`mt-2 px-6 py-2 rounded-xl font-bold transition shadow-lg ${isOnline ? "bg-neonGreen text-black" : "bg-neonBlue text-white"}`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -189,17 +178,8 @@ const Profile = () => {
         onSubmit={handleUpdate}
         className="bg-[#0f172a]/70 backdrop-blur-xl p-8 rounded-3xl border border-gray-700 shadow-xl max-w-2xl mx-auto"
       >
-        {/* PROFILE PHOTO */}
-        <FileInput
-          label="Change Profile Photo"
-          onChange={handleProfilePhotoChange}
-        />
-
-        {/* LICENSE IMAGE */}
-        <FileInput
-          label="Upload License Image"
-          onChange={handleLicenseChange}
-        />
+        <FileInput label="Change Profile Photo" name="profilePhoto" onChange={handleProfilePhotoChange} />
+        <FileInput label="Upload License Image" name="licenseImage" onChange={handleLicenseChange} />
 
         <div className="flex flex-col gap-4 mt-4">
           <InputField label="Full Name" name="name" value={profile.name} onChange={handleInputChange} />
@@ -249,16 +229,27 @@ const InputField = ({ label, ...props }) => (
   </div>
 );
 
-const FileInput = ({ label, onChange }) => (
-  <div className="flex flex-col items-center mb-6">
-    <label className="cursor-pointer text-neonGreen hover:text-neonBlue transition">
-      {label}
-      <input type="file" className="hidden" onChange={onChange} />
-    </label>
-  </div>
-);
+const FileInput = ({ label, name, onChange }) => {
+  const inputId = `file-input-${name}`;
+  return (
+    <div className="flex flex-col items-center mb-6">
+      <label htmlFor={inputId} className="cursor-pointer text-neonGreen hover:text-neonBlue transition">
+        {label}
+      </label>
+      <input
+        id={inputId}
+        type="file"
+        name={name}
+        onChange={onChange}
+        accept=".jpg,.jpeg,.png,.avif,.webp"
+        className="hidden"
+      />
+    </div>
+  );
+};
 
 export default Profile;
+
 
 
 
