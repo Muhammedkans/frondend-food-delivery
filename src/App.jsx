@@ -95,30 +95,32 @@ const App = () => {
           <Route path="/login/delivery" element={user ? redirectUser() : <DeliveryLogin />} />
           <Route path="/register/delivery" element={user ? redirectUser() : <DeliveryRegister />} />
 
-          {/* ---------------- CUSTOMER ROUTES ---------------- */}
-          <Route
-            path="/customer"
-            element={
-              <ProtectedRoute role="customer">
-                <MainLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Home />} />
-            <Route path="restaurant/:id" element={<RestaurantMenu />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<Checkout />} />
-            <Route path="payment" element={<Payment />} />
-            <Route path="order-success" element={<OrderSuccess />} />
-            <Route path="order-failed" element={<OrderFailed />} />
-            <Route path="order-tracking/:id" element={<OrderTracking />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="my-orders" element={<MyOrders />} />
-            <Route path="order/:id" element={<OrderDetails />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="ai-food" element={<AiFoodAssistant />} />
-          </Route>
+         {/* ---------------- CUSTOMER ROUTES ---------------- */}
+<Route
+  path="/customer"
+  element={
+    <ProtectedRoute role="customer">
+      <MainLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<Home />} />
 
+  {/* Corrected: restaurantId param matches RestaurantMenu.jsx */}
+  <Route path="restaurant/:restaurantId" element={<RestaurantMenu />} />
+
+  <Route path="cart" element={<Cart />} />
+  <Route path="checkout" element={<Checkout />} />
+  <Route path="payment" element={<Payment />} />
+  <Route path="order-success" element={<OrderSuccess />} />
+  <Route path="order-failed" element={<OrderFailed />} />
+  <Route path="order-tracking/:id" element={<OrderTracking />} />
+  <Route path="profile" element={<Profile />} />
+  <Route path="my-orders" element={<MyOrders />} />
+  <Route path="order/:id" element={<OrderDetails />} />
+  <Route path="chat" element={<Chat />} />
+  <Route path="ai-food" element={<AiFoodAssistant />} />
+</Route>
           {/* ---------------- ADMIN ROUTES ---------------- */}
           <Route
             path="/admin"
