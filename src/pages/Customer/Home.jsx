@@ -55,9 +55,9 @@ const Home = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative w-full rounded-3xl max-w-7xl mx-auto mt-8 px-6 py-12 overflow-hidden bg-gradient-to-r from-[#0f172a] via-[#0b1120] to-[#111827] border border-white/5"
+        className="relative w-full rounded-3xl max-w-7xl mx-auto mt-8 px-6 py-12 overflow-hidden bg-linear-to-r from-[#0f172a] via-[#0b1120] to-[#111827] border border-white/5"
       >
-        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.25),_transparent_50%)]" />
+        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,rgba(45,212,191,0.25),transparent_50%)]" />
         <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center">
           <div className="flex-1">
             <p className="uppercase tracking-widest text-xs text-emerald-300/80 mb-4">

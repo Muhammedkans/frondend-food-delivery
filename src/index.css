@@ -1,32 +1,31 @@
 @import "tailwindcss";
 
+
+/* ------------------------- Base styles ------------------------- */
 body {
   background-color: #0D0D0D;
   color: white;
   font-family: 'Inter', sans-serif;
 }
 
-/* custom neon styles */
+/* ------------------------- Neon Colors ------------------------- */
 .text-neon-green {
   color: #00ff9d;
 }
+
 .bg-neon-green {
   background-color: #00ff9d;
 }
+
 .border-neon-green {
   border-color: #00ff9d;
 }
+
 .shadow-neon-green {
   box-shadow: 0 0 20px #00ff9d;
 }
 
-.input-neon {
-  @apply w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00ff9d] focus:border-[#00ff9d];
-}
-
-
-
-
+/* ------------------------- Neon Glow Utilities ------------------------- */
 .neon-text {
   text-shadow: 0 0 5px #00ff7f, 0 0 10px #00ff7f, 0 0 20px #00ff7f;
 }
@@ -39,12 +38,12 @@ body {
   background-color: #00ff7f;
 }
 
+/* ------------------------- Inputs ------------------------- */
+.input-neon {
+  @apply w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00ff9d] focus:border-[#00ff9d];
+}
 
-
-
-
-
-
+/* ------------------------- Animations ------------------------- */
 @keyframes pulseGlow {
   0%, 100% {
     box-shadow: 0 0 15px #00FFAA, 0 0 25px #00C8FF;
@@ -56,4 +55,31 @@ body {
 
 .glow-animate {
   animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.glow-neon {
+  text-shadow: 0 0 4px #00ff9f, 0 0 10px #00ff9f, 0 0 20px #00ff9f;
+  transition: text-shadow 0.3s ease-in-out;
+}
+
+.glow-neon:hover {
+  text-shadow: 0 0 6px #00ff9f, 0 0 12px #00ff9f, 0 0 24px #00ff9f, 0 0 36px #00ff9f;
+}
+
+/* ------------------------- Mobile menu pulse ------------------------- */
+.animate-pulseGlow {
+  animation: pulseGlow 2s infinite alternate;
+}
+
+/* ------------------------- Optional Utilities ------------------------- */
+.border-neon {
+  border-color: #00ff9d;
+}
+
+.hover-neon:hover {
+  color: #00ff9d;
+}
+
+.hover-neon-bg:hover {
+  background-color: #00ff9d;
 }
