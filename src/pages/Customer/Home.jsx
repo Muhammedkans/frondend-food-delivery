@@ -22,7 +22,9 @@ const Home = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to fetch restaurants");
+      toast.error(
+        error.response?.data?.message || "Failed to fetch restaurants"
+      );
     } finally {
       setLoading(false);
     }
@@ -36,13 +38,19 @@ const Home = () => {
     return restaurants.filter((restaurant) => {
       const matchesSearch =
         restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (restaurant.cuisineType || "").toLowerCase().includes(searchTerm.toLowerCase());
+        (restaurant.cuisineType || "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
       const matchesFilter =
         selectedFilter === "all" ||
         (selectedFilter === "open" && restaurant.isOpen) ||
-        (selectedFilter === "trending" && (restaurant.averageRating || 0) >= 4.5) ||
-        (selectedFilter === "new" && restaurant.createdAt && new Date(restaurant.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+        (selectedFilter === "trending" &&
+          (restaurant.averageRating || 0) >= 4.5) ||
+        (selectedFilter === "new" &&
+          restaurant.createdAt &&
+          new Date(restaurant.createdAt) >
+            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
 
       return matchesSearch && matchesFilter;
     });
@@ -67,8 +75,9 @@ const Home = () => {
               Order from futuristic kitchens, delivered in lightning speed.
             </h1>
             <p className="text-gray-300 text-lg max-w-2xl">
-              Neon Eats curates the city’s finest chefs, late-night cloud kitchens, and trending pop-ups.
-              Unlock personalized picks, live tracking, AI food concierge, and loyalty boosters.
+              Neon Eats curates the city’s finest chefs, late-night cloud
+              kitchens, and trending pop-ups. Unlock personalized picks, live
+              tracking, AI food concierge, and loyalty boosters.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <button
@@ -86,10 +95,26 @@ const Home = () => {
             </div>
           </div>
           <div className="flex-1 grid grid-cols-2 gap-4">
-            <HeroStat label="On-time delivery" value="99.3%" hint="Peak hours optimized" />
-            <HeroStat label="Gourmet partners" value="320+" hint="Chef curated" />
-            <HeroStat label="Loyalty boosters" value="₹2.5cr" hint="Paid out last month" />
-            <HeroStat label="Live kitchens" value="43 zones" hint="Tracked in real time" />
+            <HeroStat
+              label="On-time delivery"
+              value="99.3%"
+              hint="Peak hours optimized"
+            />
+            <HeroStat
+              label="Gourmet partners"
+              value="320+"
+              hint="Chef curated"
+            />
+            <HeroStat
+              label="Loyalty boosters"
+              value="₹2.5cr"
+              hint="Paid out last month"
+            />
+            <HeroStat
+              label="Live kitchens"
+              value="43 zones"
+              hint="Tracked in real time"
+            />
           </div>
         </div>
       </motion.section>
@@ -116,7 +141,13 @@ const Home = () => {
                     : "bg-white/5 text-gray-300 border-white/10 hover:border-white/30"
                 }`}
               >
-                {filter === "all" ? "All spots" : filter === "open" ? "Open now" : filter === "trending" ? "Trending" : "New"}
+                {filter === "all"
+                  ? "All spots"
+                  : filter === "open"
+                  ? "Open now"
+                  : filter === "trending"
+                  ? "Trending"
+                  : "New"}
               </button>
             ))}
           </div>
@@ -126,7 +157,11 @@ const Home = () => {
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto mt-10 px-6 space-y-12">
         <CuratedSections restaurants={restaurants} loading={loading} />
-        <RestaurantGrid restaurants={filteredRestaurants} loading={loading} user={user} />
+        <RestaurantGrid
+          restaurants={filteredRestaurants}
+          loading={loading}
+          user={user}
+        />
       </div>
     </div>
   );
@@ -141,56 +176,112 @@ const HeroStat = ({ label, value, hint }) => (
 );
 
 const CuratedSections = ({ restaurants, loading }) => {
-  const trending = restaurants.filter((r) => (r.averageRating || 0) >= 4.5).slice(0, 8);
+  const trending = restaurants
+    .filter((r) => (r.averageRating || 0) >= 4.5)
+    .slice(0, 8);
   const flash = restaurants.filter((r) => r.offers?.length).slice(0, 6);
-  const lateNight = restaurants.filter((r) => r.isOpen && r.operatingHours?.includes("late")).slice(0, 6);
+  const lateNight = restaurants
+    .filter((r) => r.isOpen && r.operatingHours?.includes("late"))
+    .slice(0, 6);
 
   return (
     <div className="space-y-10">
-      <CuratedRow title="Trending chef drops" subtitle="Hot kitchens winning tonight" items={trending} loading={loading} accent="emerald" />
-      <CuratedRow title="Flash sales ⚡" subtitle="Limited time price slashes" items={flash} loading={loading} accent="amber" />
-      <CuratedRow title="Late-night cloud kitchens" subtitle="Ghost kitchens serving past midnight" items={lateNight} loading={loading} accent="violet" />
+      {/* ✅ Trending section clickable like All experiences */}
+      <CuratedRow
+        title="Trending chef drops"
+        subtitle="Hot kitchens winning tonight"
+        items={trending}
+        loading={loading}
+        accent="emerald"
+        clickable
+      />
+
+      <CuratedRow
+        title="Flash sales ⚡"
+        subtitle="Limited time price slashes"
+        items={flash}
+        loading={loading}
+        accent="amber"
+      />
+
+      <CuratedRow
+        title="Late-night cloud kitchens"
+        subtitle="Ghost kitchens serving past midnight"
+        items={lateNight}
+        loading={loading}
+        accent="violet"
+      />
     </div>
   );
 };
 
-const CuratedRow = ({ title, subtitle, items, loading, accent }) => (
+const CuratedRow = ({ title, subtitle, items, loading, accent, clickable }) => (
   <section>
     <div className="flex items-center justify-between mb-4">
       <div>
         <h2 className="text-2xl font-bold text-white">{title}</h2>
         <p className="text-sm text-gray-500">{subtitle}</p>
       </div>
-      <button className="text-sm text-gray-400 hover:text-white transition">See all →</button>
     </div>
+
     {loading ? (
       <RowSkeleton />
     ) : items.length === 0 ? (
-      <p className="text-gray-500 text-sm">Nothing in this lane yet. Check back soon.</p>
+      <p className="text-gray-500 text-sm">
+        Nothing in this lane yet. Check back soon.
+      </p>
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {items.map((item) => (
-          <div
-            key={item._id}
-            className="rounded-2xl border border-white/10 bg-white/5 p-4 hover:border-white/30 transition shadow-lg shadow-black/30"
-          >
-            <div className="relative">
-              <img
-                src={item.bannerImage || item.image || "/logo.png"}
-                alt={item.name}
-                className="w-full h-40 object-cover rounded-2xl"
-              />
-              <span className={`absolute top-3 right-3 text-xs font-semibold px-3 py-1 rounded-full bg-${accent}-500/20 text-${accent}-300`}>
-                {item.tagline || "Chef curated"}
-              </span>
+        {items.map((item) =>
+          clickable ? (
+            <Link
+              key={item._id}
+              to={`/customer/restaurant/${item._id}`}
+              className="rounded-2xl border border-white/10 bg-white/5 p-4 hover:border-white/30 transition shadow-lg shadow-black/30 block"
+            >
+              <div className="relative">
+                <img
+                  src={item.bannerImage || item.image || "/logo.png"}
+                  alt={item.name}
+                  className="w-full h-40 object-cover rounded-2xl"
+                />
+                <span
+                  className={`absolute top-3 right-3 text-xs font-semibold px-3 py-1 rounded-full bg-${accent}-500/20 text-${accent}-300`}
+                >
+                  {item.tagline || "Chef curated"}
+                </span>
+              </div>
+              <h3 className="mt-4 text-xl font-semibold text-white">{item.name}</h3>
+              <p className="text-sm text-gray-400">{item.cuisineType}</p>
+              <p className="text-xs text-gray-500 mt-2">
+                {item.offers?.[0]?.title || "Neon Rewards eligible"}
+              </p>
+            </Link>
+          ) : (
+            <div
+              key={item._id}
+              className="rounded-2xl border border-white/10 bg-white/5 p-4 hover:border-white/30 transition shadow-lg shadow-black/30"
+            >
+              <div className="relative">
+                <img
+                  src={item.bannerImage || item.image || "/logo.png"}
+                  alt={item.name}
+                  className="w-full h-40 object-cover rounded-2xl"
+                />
+                <span
+                  className={`absolute top-3 right-3 text-xs font-semibold px-3 py-1 rounded-full bg-${accent}-500/20 text-${accent}-300`}
+                >
+                  {item.tagline || "Chef curated"}
+                </span>
+              </div>
+              <h3 className="mt-4 text-xl font-semibold text-white">{item.name}</h3>
+              <p className="text-sm text-gray-400">{item.cuisineType}</p>
+              <p className="text-xs text-gray-500 mt-2">
+                {item.offers?.[0]?.title || "Neon Rewards eligible"}
+              </p>
             </div>
-            <h3 className="mt-4 text-xl font-semibold text-white">{item.name}</h3>
-            <p className="text-sm text-gray-400">{item.cuisineType}</p>
-            <p className="text-xs text-gray-500 mt-2">
-              {item.offers?.[0]?.title || "Neon Rewards eligible"}
-            </p>
-          </div>
-        ))}
+          )
+        )}
       </div>
     )}
   </section>
@@ -199,7 +290,10 @@ const CuratedRow = ({ title, subtitle, items, loading, accent }) => (
 const RowSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
     {Array.from({ length: 4 }).map((_, idx) => (
-      <div key={idx} className="rounded-2xl border border-white/5 bg-white/5 p-4 animate-pulse space-y-4">
+      <div
+        key={idx}
+        className="rounded-2xl border border-white/5 bg-white/5 p-4 animate-pulse space-y-4"
+      >
         <div className="w-full h-40 bg-white/10 rounded-2xl" />
         <div className="h-4 bg-white/10 rounded" />
         <div className="h-3 bg-white/10 rounded w-2/3" />
@@ -223,7 +317,9 @@ const RestaurantGrid = ({ restaurants, loading, user }) => {
         <div>
           <h2 className="text-3xl font-bold text-white">All experiences</h2>
           <p className="text-sm text-gray-500">
-            {restaurants.length} {restaurants.length === 1 ? "chef" : "chefs"} ready for your cravings
+            {restaurants.length}{" "}
+            {restaurants.length === 1 ? "chef" : "chefs"} ready for your
+            cravings
           </p>
         </div>
         {user ? (
@@ -242,6 +338,7 @@ const RestaurantGrid = ({ restaurants, loading, user }) => {
           </Link>
         )}
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
         {restaurants.map((restaurant) => (
           <RestaurantCard key={restaurant._id} restaurant={restaurant} />
@@ -268,7 +365,9 @@ const RestaurantCard = ({ restaurant }) => {
           <div className="absolute top-4 left-4 flex gap-2">
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                isOpen ? "bg-emerald-400 text-black" : "bg-red-500/80 text-white"
+                isOpen
+                  ? "bg-emerald-400 text-black"
+                  : "bg-red-500/80 text-white"
               }`}
             >
               {isOpen ? "Open now" : "Closed"}
@@ -282,7 +381,9 @@ const RestaurantCard = ({ restaurant }) => {
         </div>
         <div className="p-5 space-y-3">
           <h3 className="text-2xl font-bold text-white">{restaurant.name}</h3>
-          <p className="text-sm text-gray-400">{restaurant.cuisineType || "Multi cuisine"}</p>
+          <p className="text-sm text-gray-400">
+            {restaurant.cuisineType || "Multi cuisine"}
+          </p>
           <div className="flex justify-between text-sm text-gray-400">
             <span>⭐ {restaurant.averageRating || 4.5}</span>
             <span>{restaurant.estimatedDeliveryTime || "30-45 mins"}</span>
@@ -298,6 +399,8 @@ const RestaurantCard = ({ restaurant }) => {
 };
 
 export default Home;
+
+
 
 
 
